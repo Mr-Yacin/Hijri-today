@@ -1,5 +1,4 @@
 import { browser } from '$app/environment';
-import { page } from '$app/stores';
 import { init, register, locale, waitLocale, _ } from 'svelte-i18n';
 import { writable, derived } from 'svelte/store';
 import { i18nConfig } from './config.js';
@@ -67,8 +66,6 @@ export function getTextDirection(currentLocale: string): 'rtl' | 'ltr' {
 
 // Format numbers according to locale with Arabic-Indic and Latin numerals
 export function formatNumber(num: number, currentLocale: 'ar' | 'en'): string {
-	const numberSystem = i18nConfig.numberSystems[currentLocale];
-	
 	// For Arabic, use Arabic-Indic numerals
 	if (currentLocale === 'ar') {
 		return new Intl.NumberFormat('ar-SA', { 

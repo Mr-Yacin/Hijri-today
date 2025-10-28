@@ -8,7 +8,7 @@
 	$: basePath = `/${$currentLocale}`;
 
 	const navItems = [
-		{ key: 'today', path: '', icon: '📅' },
+		{ key: 'today', path: '/today', icon: '📅' },
 		{ key: 'convert', path: '/convert', icon: '🔄' },
 		{ key: 'calendar', path: '/calendar', icon: '📆' }
 	];
