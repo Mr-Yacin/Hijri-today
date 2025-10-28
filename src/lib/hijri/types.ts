@@ -24,3 +24,23 @@ export interface CountryProfile {
 	displayName: { ar: string; en: string };
 	timezone: string;
 }
+
+// Umm al-Qura table data structures
+export interface UmmAlQuraMonth {
+	h_year: number;
+	h_month: number;
+	g_start: string; // ISO date string (YYYY-MM-DD)
+	days: number;
+}
+
+export interface UmmAlQuraMetadata {
+	source: string;
+	range: string;
+	lastUpdated: string;
+	description: string;
+}
+
+export interface UmmAlQuraTable {
+	metadata: UmmAlQuraMetadata;
+	months: UmmAlQuraMonth[];
+}
