@@ -6,13 +6,21 @@
 		"copy": "Copy",
 		"share": "Share",
 		"loading": "Loading...",
-		"error": "Error"
+		"error": "Error",
+		"method": "Method",
+		"country": "Country",
+		"switch_language": "Switch Language"
 	},
 	"dates": {
 		"hijri": "Hijri",
 		"gregorian": "Gregorian",
 		"today_hijri": "Today's Hijri Date",
-		"today_gregorian": "Today's Gregorian Date"
+		"today_gregorian": "Today's Gregorian Date",
+		"convert_to_hijri": "Convert to Hijri",
+		"convert_to_gregorian": "Convert to Gregorian",
+		"day": "Day",
+		"month": "Month",
+		"year": "Year"
 	},
 	"months": {
 		"hijri": {
@@ -49,6 +57,17 @@
 		"today": "Today",
 		"convert": "Convert",
 		"calendar": "Calendar",
-		"language": "Language"
+		"language": "Language",
+		"arabic": "العربية",
+		"english": "English"
+	},
+	"actions": {
+		"copy_date": "Copy Date",
+		"share_date": "Share Date",
+		"add_to_calendar": "Add to Calendar"
+	},
+	"formats": {
+		"date_format": "{day} {month} {year}",
+		"full_date_format": "{day} {month} {year} AH"
 	}
 }

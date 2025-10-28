@@ -6,13 +6,21 @@
 		"copy": "نسخ",
 		"share": "مشاركة",
 		"loading": "جاري التحميل...",
-		"error": "خطأ"
+		"error": "خطأ",
+		"method": "الطريقة",
+		"country": "البلد",
+		"switch_language": "تبديل اللغة"
 	},
 	"dates": {
 		"hijri": "هجري",
 		"gregorian": "ميلادي",
 		"today_hijri": "التاريخ الهجري اليوم",
-		"today_gregorian": "التاريخ الميلادي اليوم"
+		"today_gregorian": "التاريخ الميلادي اليوم",
+		"convert_to_hijri": "تحويل إلى هجري",
+		"convert_to_gregorian": "تحويل إلى ميلادي",
+		"day": "يوم",
+		"month": "شهر",
+		"year": "سنة"
 	},
 	"months": {
 		"hijri": {
@@ -49,6 +57,17 @@
 		"today": "اليوم",
 		"convert": "تحويل",
 		"calendar": "التقويم",
-		"language": "اللغة"
+		"language": "اللغة",
+		"arabic": "العربية",
+		"english": "English"
+	},
+	"actions": {
+		"copy_date": "نسخ التاريخ",
+		"share_date": "مشاركة التاريخ",
+		"add_to_calendar": "إضافة إلى التقويم"
+	},
+	"formats": {
+		"date_format": "{day} {month} {year}",
+		"full_date_format": "{day} {month} {year} هـ"
 	}
 }
