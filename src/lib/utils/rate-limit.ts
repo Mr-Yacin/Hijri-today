@@ -30,13 +30,17 @@ const RATE_LIMITS = {
 	'api-ics': {
 		maxRequests: 20, // 20 requests per window (more restrictive for file generation)
 		windowMs: 60 * 1000, // 1 minute window
+	},
+	'api-widget': {
+		maxRequests: 300, // 300 requests per window (most lenient for widget usage)
+		windowMs: 60 * 1000, // 1 minute window
 	}
 };
 
 /**
  * Apply rate limiting to a client IP for a specific endpoint type
  * @param clientIP - Client IP address
- * @param endpointType - Type of endpoint (api-conversion, api-today, api-ics)
+ * @param endpointType - Type of endpoint (api-conversion, api-today, api-ics, api-widget)
  * @returns RateLimitResult - Whether the request is allowed and remaining quota
  */
 export async function rateLimit(clientIP: string, endpointType: keyof typeof RATE_LIMITS): Promise<RateLimitResult> {

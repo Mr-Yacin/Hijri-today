@@ -1,0 +1,613 @@
+/**
+ * Hijri Date Widget Styles
+ * 
+ * This CSS file provides comprehensive styling for the Hijri Date Widget
+ * including responsive design, theming, and accessibility features.
+ */
+
+/* Base Widget Styles */
+.hijri-widget {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #2d3748;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    max-width: 320px;
+    min-width: 240px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.15s ease-in-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.hijri-widget:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* RTL Support */
+.hijri-widget-rtl {
+    direction: rtl;
+    text-align: right;
+}
+
+.hijri-widget-rtl * {
+    text-align: inherit;
+}
+
+/* Container */
+.hijri-widget-container {
+    width: 100%;
+    position: relative;
+}
+
+/* Loading State */
+.hijri-widget-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px 16px;
+    min-height: 80px;
+}
+
+.hijri-widget-loading-text {
+    font-size: 13px;
+    color: #718096;
+    font-weight: 500;
+}
+
+.hijri-widget-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e2e8f0;
+    border-top: 2px solid #3182ce;
+    border-radius: 50%;
+    animation: hijri-widget-spin 1s linear infinite;
+}
+
+@keyframes hijri-widget-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error State */
+.hijri-widget-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px;
+    background: #fed7d7;
+    color: #c53030;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 60px;
+}
+
+.hijri-widget-error-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.hijri-widget-error-text {
+    flex: 1;
+}
+
+/* Success State */
+.hijri-widget-success {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Date Display */
+.hijri-widget-date {
+    text-align: center;
+    padding: 8px 0;
+}
+
+.hijri-widget-hijri-date {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 6px;
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+}
+
+.hijri-widget-gregorian-date {
+    font-size: 14px;
+    color: #718096;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Actions */
+.hijri-widget-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.hijri-widget-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #3182ce;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    user-select: none;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.hijri-widget-copy-btn:hover {
+    background: #2c5aa0;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hijri-widget-copy-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.hijri-widget-copy-btn:focus {
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.3);
+}
+
+.hijri-widget-copy-btn.hijri-widget-copied {
+    background: #38a169;
+    animation: hijri-widget-pulse 0.3s ease-in-out;
+}
+
+.hijri-widget-copy-btn.hijri-widget-copied:hover {
+    background: #2f855a;
+}
+
+@keyframes hijri-widget-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.hijri-widget-copy-icon {
+    font-size: 14px;
+    line-height: 1;
+}
+
+.hijri-widget-copy-text {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Method Display */
+.hijri-widget-method {
+    text-align: center;
+    font-size: 11px;
+    color: #a0aec0;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 12px;
+    font-weight: 500;
+}
+
+.hijri-widget-method-text {
+    display: inline-block;
+}
+
+/* Dark Theme */
+.hijri-widget-dark {
+    color: #e2e8f0;
+    background: #2d3748;
+    border-color: #4a5568;
+}
+
+.hijri-widget-dark:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.hijri-widget-dark .hijri-widget-loading-text {
+    color: #a0aec0;
+}
+
+.hijri-widget-dark .hijri-widget-spinner {
+    border-color: #4a5568;
+    border-top-color: #63b3ed;
+}
+
+.hijri-widget-dark .hijri-widget-error {
+    background: #742a2a;
+    color: #feb2b2;
+}
+
+.hijri-widget-dark .hijri-widget-hijri-date {
+    color: #f7fafc;
+}
+
+.hijri-widget-dark .hijri-widget-gregorian-date {
+    color: #a0aec0;
+}
+
+.hijri-widget-dark .hijri-widget-copy-btn {
+    background: #4299e1;
+}
+
+.hijri-widget-dark .hijri-widget-copy-btn:hover {
+    background: #3182ce;
+}
+
+.hijri-widget-dark .hijri-widget-copy-btn.hijri-widget-copied {
+    background: #48bb78;
+}
+
+.hijri-widget-dark .hijri-widget-copy-btn.hijri-widget-copied:hover {
+    background: #38a169;
+}
+
+.hijri-widget-dark .hijri-widget-method {
+    color: #718096;
+    border-top-color: #4a5568;
+}
+
+/* Auto Theme (respects system preference) */
+@media (prefers-color-scheme: dark) {
+    .hijri-widget-auto {
+        color: #e2e8f0;
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+
+    .hijri-widget-auto:hover {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    }
+
+    .hijri-widget-auto .hijri-widget-loading-text {
+        color: #a0aec0;
+    }
+
+    .hijri-widget-auto .hijri-widget-spinner {
+        border-color: #4a5568;
+        border-top-color: #63b3ed;
+    }
+
+    .hijri-widget-auto .hijri-widget-error {
+        background: #742a2a;
+        color: #feb2b2;
+    }
+
+    .hijri-widget-auto .hijri-widget-hijri-date {
+        color: #f7fafc;
+    }
+
+    .hijri-widget-auto .hijri-widget-gregorian-date {
+        color: #a0aec0;
+    }
+
+    .hijri-widget-auto .hijri-widget-copy-btn {
+        background: #4299e1;
+    }
+
+    .hijri-widget-auto .hijri-widget-copy-btn:hover {
+        background: #3182ce;
+    }
+
+    .hijri-widget-auto .hijri-widget-copy-btn.hijri-widget-copied {
+        background: #48bb78;
+    }
+
+    .hijri-widget-auto .hijri-widget-copy-btn.hijri-widget-copied:hover {
+        background: #38a169;
+    }
+
+    .hijri-widget-auto .hijri-widget-method {
+        color: #718096;
+        border-top-color: #4a5568;
+    }
+}
+
+/* Compact Theme */
+.hijri-widget-compact {
+    padding: 12px;
+    font-size: 13px;
+    max-width: 280px;
+}
+
+.hijri-widget-compact .hijri-widget-success {
+    gap: 12px;
+}
+
+.hijri-widget-compact .hijri-widget-hijri-date {
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.hijri-widget-compact .hijri-widget-gregorian-date {
+    font-size: 13px;
+}
+
+.hijri-widget-compact .hijri-widget-copy-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+}
+
+.hijri-widget-compact .hijri-widget-method {
+    font-size: 10px;
+    padding-top: 8px;
+}
+
+/* Minimal Theme */
+.hijri-widget-minimal {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    padding: 12px;
+}
+
+.hijri-widget-minimal:hover {
+    box-shadow: none;
+}
+
+.hijri-widget-minimal .hijri-widget-date {
+    padding: 4px 0;
+}
+
+.hijri-widget-minimal .hijri-widget-method {
+    border-top: none;
+    padding-top: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .hijri-widget {
+        max-width: 100%;
+        font-size: 13px;
+        padding: 14px;
+    }
+    
+    .hijri-widget-hijri-date {
+        font-size: 18px;
+    }
+    
+    .hijri-widget-gregorian-date {
+        font-size: 13px;
+    }
+    
+    .hijri-widget-copy-btn {
+        padding: 7px 14px;
+        font-size: 11px;
+    }
+    
+    .hijri-widget-method {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 320px) {
+    .hijri-widget {
+        padding: 12px;
+        font-size: 12px;
+    }
+    
+    .hijri-widget-hijri-date {
+        font-size: 16px;
+    }
+    
+    .hijri-widget-gregorian-date {
+        font-size: 12px;
+    }
+    
+    .hijri-widget-copy-btn {
+        padding: 6px 12px;
+        font-size: 10px;
+        gap: 4px;
+    }
+    
+    .hijri-widget-copy-icon {
+        font-size: 12px;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .hijri-widget {
+        border-width: 2px;
+        border-color: #000000;
+    }
+    
+    .hijri-widget-hijri-date {
+        color: #000000;
+        font-weight: 800;
+    }
+    
+    .hijri-widget-copy-btn {
+        background: #000000;
+        border: 2px solid #000000;
+    }
+    
+    .hijri-widget-copy-btn:hover {
+        background: #333333;
+        border-color: #333333;
+    }
+    
+    .hijri-widget-dark {
+        border-color: #ffffff;
+    }
+    
+    .hijri-widget-dark .hijri-widget-hijri-date {
+        color: #ffffff;
+        font-weight: 800;
+    }
+    
+    .hijri-widget-dark .hijri-widget-copy-btn {
+        background: #ffffff;
+        color: #000000;
+        border: 2px solid #ffffff;
+    }
+    
+    .hijri-widget-dark .hijri-widget-copy-btn:hover {
+        background: #cccccc;
+        border-color: #cccccc;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .hijri-widget,
+    .hijri-widget-copy-btn,
+    .hijri-widget-spinner {
+        animation: none;
+        transition: none;
+    }
+    
+    .hijri-widget-copy-btn:hover {
+        transform: none;
+    }
+    
+    .hijri-widget-copy-btn:active {
+        transform: none;
+    }
+    
+    .hijri-widget-copy-btn.hijri-widget-copied {
+        animation: none;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .hijri-widget {
+        box-shadow: none;
+        border: 1px solid #000000;
+        background: #ffffff;
+        color: #000000;
+        page-break-inside: avoid;
+    }
+    
+    .hijri-widget-copy-btn {
+        display: none;
+    }
+    
+    .hijri-widget-loading,
+    .hijri-widget-error {
+        display: none;
+    }
+    
+    .hijri-widget-hijri-date {
+        color: #000000;
+    }
+    
+    .hijri-widget-gregorian-date {
+        color: #333333;
+    }
+    
+    .hijri-widget-method {
+        color: #666666;
+        border-top-color: #cccccc;
+    }
+}
+
+/* Focus Management for Accessibility */
+.hijri-widget-copy-btn:focus-visible {
+    outline: 2px solid #3182ce;
+    outline-offset: 2px;
+}
+
+/* Screen Reader Support */
+.hijri-widget-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Loading Animation Variants */
+.hijri-widget-loading-dots {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.hijri-widget-loading-dots span {
+    width: 6px;
+    height: 6px;
+    background: #3182ce;
+    border-radius: 50%;
+    animation: hijri-widget-bounce 1.4s ease-in-out infinite both;
+}
+
+.hijri-widget-loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+.hijri-widget-loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes hijri-widget-bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+    }
+}
+
+/* Custom Properties for Easy Theming */
+.hijri-widget {
+    --hijri-widget-bg: #ffffff;
+    --hijri-widget-text: #2d3748;
+    --hijri-widget-border: #e2e8f0;
+    --hijri-widget-primary: #3182ce;
+    --hijri-widget-primary-hover: #2c5aa0;
+    --hijri-widget-success: #38a169;
+    --hijri-widget-error-bg: #fed7d7;
+    --hijri-widget-error-text: #c53030;
+    --hijri-widget-muted: #718096;
+    --hijri-widget-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --hijri-widget-shadow-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    
+    background: var(--hijri-widget-bg);
+    color: var(--hijri-widget-text);
+    border-color: var(--hijri-widget-border);
+    box-shadow: var(--hijri-widget-shadow);
+}
+
+.hijri-widget:hover {
+    box-shadow: var(--hijri-widget-shadow-hover);
+}
+
+.hijri-widget-copy-btn {
+    background: var(--hijri-widget-primary);
+}
+
+.hijri-widget-copy-btn:hover {
+    background: var(--hijri-widget-primary-hover);
+}
+
+.hijri-widget-copy-btn.hijri-widget-copied {
+    background: var(--hijri-widget-success);
+}
+
+/* Dark theme custom properties */
+.hijri-widget-dark {
+    --hijri-widget-bg: #2d3748;
+    --hijri-widget-text: #e2e8f0;
+    --hijri-widget-border: #4a5568;
+    --hijri-widget-primary: #4299e1;
+    --hijri-widget-primary-hover: #3182ce;
+    --hijri-widget-success: #48bb78;
+    --hijri-widget-error-bg: #742a2a;
+    --hijri-widget-error-text: #feb2b2;
+    --hijri-widget-muted: #a0aec0;
+    --hijri-widget-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    --hijri-widget-shadow-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
