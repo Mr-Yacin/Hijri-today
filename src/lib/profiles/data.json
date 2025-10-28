@@ -1,0 +1,202 @@
+{
+  "SA": {
+    "country": "SA",
+    "method": "ummalqura",
+    "offset": 0,
+    "displayName": {
+      "ar": "أم القرى",
+      "en": "Umm al-Qura"
+    },
+    "timezone": "Asia/Riyadh"
+  },
+  "MA": {
+    "country": "MA",
+    "method": "moonsighting_national",
+    "offset": -1,
+    "displayName": {
+      "ar": "الرؤية المغربية",
+      "en": "Moroccan Moonsighting"
+    },
+    "timezone": "Africa/Casablanca"
+  },
+  "TR": {
+    "country": "TR",
+    "method": "diyanet",
+    "offset": 0,
+    "displayName": {
+      "ar": "ديانت التركية",
+      "en": "Turkish Diyanet"
+    },
+    "timezone": "Europe/Istanbul"
+  },
+  "EG": {
+    "country": "EG",
+    "method": "ummalqura",
+    "offset": -1,
+    "displayName": {
+      "ar": "أم القرى (مصر)",
+      "en": "Umm al-Qura (Egypt)"
+    },
+    "timezone": "Africa/Cairo"
+  },
+  "AE": {
+    "country": "AE",
+    "method": "ummalqura",
+    "offset": 0,
+    "displayName": {
+      "ar": "أم القرى (الإمارات)",
+      "en": "Umm al-Qura (UAE)"
+    },
+    "timezone": "Asia/Dubai"
+  },
+  "KW": {
+    "country": "KW",
+    "method": "ummalqura",
+    "offset": 0,
+    "displayName": {
+      "ar": "أم القرى (الكويت)",
+      "en": "Umm al-Qura (Kuwait)"
+    },
+    "timezone": "Asia/Kuwait"
+  },
+  "QA": {
+    "country": "QA",
+    "method": "ummalqura",
+    "offset": 0,
+    "displayName": {
+      "ar": "أم القرى (قطر)",
+      "en": "Umm al-Qura (Qatar)"
+    },
+    "timezone": "Asia/Qatar"
+  },
+  "BH": {
+    "country": "BH",
+    "method": "ummalqura",
+    "offset": 0,
+    "displayName": {
+      "ar": "أم القرى (البحرين)",
+      "en": "Umm al-Qura (Bahrain)"
+    },
+    "timezone": "Asia/Bahrain"
+  },
+  "OM": {
+    "country": "OM",
+    "method": "ummalqura",
+    "offset": 0,
+    "displayName": {
+      "ar": "أم القرى (عمان)",
+      "en": "Umm al-Qura (Oman)"
+    },
+    "timezone": "Asia/Muscat"
+  },
+  "JO": {
+    "country": "JO",
+    "method": "ummalqura",
+    "offset": -1,
+    "displayName": {
+      "ar": "أم القرى (الأردن)",
+      "en": "Umm al-Qura (Jordan)"
+    },
+    "timezone": "Asia/Amman"
+  },
+  "LB": {
+    "country": "LB",
+    "method": "ummalqura",
+    "offset": -1,
+    "displayName": {
+      "ar": "أم القرى (لبنان)",
+      "en": "Umm al-Qura (Lebanon)"
+    },
+    "timezone": "Asia/Beirut"
+  },
+  "SY": {
+    "country": "SY",
+    "method": "ummalqura",
+    "offset": -1,
+    "displayName": {
+      "ar": "أم القرى (سوريا)",
+      "en": "Umm al-Qura (Syria)"
+    },
+    "timezone": "Asia/Damascus"
+  },
+  "IQ": {
+    "country": "IQ",
+    "method": "ummalqura",
+    "offset": -1,
+    "displayName": {
+      "ar": "أم القرى (العراق)",
+      "en": "Umm al-Qura (Iraq)"
+    },
+    "timezone": "Asia/Baghdad"
+  },
+  "IR": {
+    "country": "IR",
+    "method": "ummalqura",
+    "offset": -1,
+    "displayName": {
+      "ar": "أم القرى (إيران)",
+      "en": "Umm al-Qura (Iran)"
+    },
+    "timezone": "Asia/Tehran"
+  },
+  "PK": {
+    "country": "PK",
+    "method": "moonsighting_national",
+    "offset": 0,
+    "displayName": {
+      "ar": "الرؤية الباكستانية",
+      "en": "Pakistani Moonsighting"
+    },
+    "timezone": "Asia/Karachi"
+  },
+  "IN": {
+    "country": "IN",
+    "method": "moonsighting_national",
+    "offset": 0,
+    "displayName": {
+      "ar": "الرؤية الهندية",
+      "en": "Indian Moonsighting"
+    },
+    "timezone": "Asia/Kolkata"
+  },
+  "BD": {
+    "country": "BD",
+    "method": "moonsighting_national",
+    "offset": 0,
+    "displayName": {
+      "ar": "الرؤية البنغلاديشية",
+      "en": "Bangladeshi Moonsighting"
+    },
+    "timezone": "Asia/Dhaka"
+  },
+  "MY": {
+    "country": "MY",
+    "method": "moonsighting_national",
+    "offset": 0,
+    "displayName": {
+      "ar": "الرؤية الماليزية",
+      "en": "Malaysian Moonsighting"
+    },
+    "timezone": "Asia/Kuala_Lumpur"
+  },
+  "ID": {
+    "country": "ID",
+    "method": "moonsighting_national",
+    "offset": 0,
+    "displayName": {
+      "ar": "الرؤية الإندونيسية",
+      "en": "Indonesian Moonsighting"
+    },
+    "timezone": "Asia/Jakarta"
+  },
+  "DEFAULT": {
+    "country": "DEFAULT",
+    "method": "ummalqura",
+    "offset": 0,
+    "displayName": {
+      "ar": "أم القرى (افتراضي)",
+      "en": "Umm al-Qura (Default)"
+    },
+    "timezone": "UTC"
+  }
+}
