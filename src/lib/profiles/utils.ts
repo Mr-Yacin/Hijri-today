@@ -1,6 +1,7 @@
 import type { CountryProfile } from '../hijri/types.js';
 import { CountryProfileDetector } from './detector.js';
 import { parseCookies, getUserPreferences } from './cookies.js';
+import { getAllProfiles as getAllProfilesFromConfig, getCountryProfile } from './config.js';
 
 // Global detector instance
 const detector = new CountryProfileDetector();
@@ -148,4 +149,61 @@ export function normalizeCountryCode(countryCode: string): string | null {
 	}
 
 	return normalized;
+}
+
+/**
+ * Get all available country profiles
+ * @returns CountryProfile[] - Array of all available profiles
+ */
+export function getAllProfiles(): CountryProfile[] {
+	return getAllProfilesFromConfig();
+}
+
+/**
+ * Get country profile by country code
+ * @param countryCode - Two-letter country code
+ * @returns CountryProfile | null - Profile for the country or null if not found
+ */
+export function getProfileByCountry(countryCode: string): CountryProfile | null {
+	return getCountryProfile(countryCode);
+}
+
+/**
+ * Detect country profile from request (wrapper function)
+ * @param request - Request object
+ * @returns Promise<CountryProfile> - Detected country profile
+ */
+export async function detectCountryProfile(request: Request): Promise<CountryProfile> {
+	return detectCountryFromRequest(request);
+}
+
+/**
+ * Get user profile override from cookies (wrapper function)
+ * @param cookies - SvelteKit cookies object
+ * @returns CountryProfile | null - User override profile or null
+ */
+export function getUserProfileOverride(cookies: any): CountryProfile | null {
+	// Convert SvelteKit cookies to plain object
+	const cookieObj: Record<string, string> = {};
+	
+	// Try to get cookies using SvelteKit's cookies.getAll() if available
+	if (cookies && typeof cookies.getAll === 'function') {
+		const allCookies = cookies.getAll();
+		for (const cookie of allCookies) {
+			cookieObj[cookie.name] = cookie.value;
+		}
+	} else if (cookies && typeof cookies.get === 'function') {
+		// Fallback: try common cookie names
+		const cookieNames = ['hijri-country', 'country', 'hijri-method', 'method'];
+		for (const name of cookieNames) {
+			const value = cookies.get(name);
+			if (value) {
+				cookieObj[name] = value;
+			}
+		}
+	}
+
+	// Use the detector to get user override
+	const detector = new CountryProfileDetector();
+	return detector.getUserOverride(cookieObj);
 }
