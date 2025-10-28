@@ -31,6 +31,14 @@ export function getAllProfiles(): CountryProfile[] {
 }
 
 /**
+ * Get all available country profiles (alias for getAllProfiles)
+ * @returns Array of all CountryProfile objects
+ */
+export function getCountryProfiles(): CountryProfile[] {
+	return getAllProfiles();
+}
+
+/**
  * Get country profiles by calculation method
  * @param method - Calculation method to filter by
  * @returns Array of CountryProfile objects using the specified method

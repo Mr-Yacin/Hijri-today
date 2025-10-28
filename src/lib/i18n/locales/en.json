@@ -9,7 +9,8 @@
 		"error": "Error",
 		"method": "Method",
 		"country": "Country",
-		"switch_language": "Switch Language"
+		"switch_language": "Switch Language",
+		"close": "Close"
 	},
 	"dates": {
 		"hijri": "Hijri",
@@ -20,7 +21,13 @@
 		"convert_to_gregorian": "Convert to Gregorian",
 		"day": "Day",
 		"month": "Month",
-		"year": "Year"
+		"year": "Year",
+		"date_details": "Date Details",
+		"alternative_method": "Alternative Method",
+		"days": "days",
+		"same_date": "Same date",
+		"compare_methods": "Compare Methods",
+		"method_difference": "Method Difference"
 	},
 	"months": {
 		"hijri": {
@@ -59,7 +66,10 @@
 		"calendar": "Calendar",
 		"language": "Language",
 		"arabic": "العربية",
-		"english": "English"
+		"english": "English",
+		"previous_month": "Previous month",
+		"next_month": "Next month",
+		"jump_to_today": "Jump to today"
 	},
 	"actions": {
 		"copy_date": "Copy Date",

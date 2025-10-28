@@ -9,7 +9,8 @@
 		"error": "خطأ",
 		"method": "الطريقة",
 		"country": "البلد",
-		"switch_language": "تبديل اللغة"
+		"switch_language": "تبديل اللغة",
+		"close": "إغلاق"
 	},
 	"dates": {
 		"hijri": "هجري",
@@ -20,7 +21,13 @@
 		"convert_to_gregorian": "تحويل إلى ميلادي",
 		"day": "يوم",
 		"month": "شهر",
-		"year": "سنة"
+		"year": "سنة",
+		"date_details": "تفاصيل التاريخ",
+		"alternative_method": "الطريقة البديلة",
+		"days": "أيام",
+		"same_date": "نفس التاريخ",
+		"compare_methods": "مقارنة الطرق",
+		"method_difference": "اختلاف الطريقة"
 	},
 	"months": {
 		"hijri": {
@@ -59,7 +66,10 @@
 		"calendar": "التقويم",
 		"language": "اللغة",
 		"arabic": "العربية",
-		"english": "English"
+		"english": "English",
+		"previous_month": "الشهر السابق",
+		"next_month": "الشهر التالي",
+		"jump_to_today": "الانتقال إلى اليوم"
 	},
 	"actions": {
 		"copy_date": "نسخ التاريخ",
