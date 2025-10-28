@@ -1,0 +1,37 @@
+@import 'tailwindcss';
+
+/* Arabic font imports */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Base styles */
+html {
+	font-family: 'Inter', sans-serif;
+}
+
+html[dir="rtl"] {
+	font-family: 'Noto Sans Arabic', Arial, sans-serif;
+}
+
+/* RTL-specific adjustments */
+[dir="rtl"] .rtl\:space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+	--tw-space-x-reverse: 1;
+}
+
+/* Custom scrollbar for RTL */
+[dir="rtl"] ::-webkit-scrollbar {
+	width: 8px;
+}
+
+[dir="rtl"] ::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+
+[dir="rtl"] ::-webkit-scrollbar-thumb {
+	background: #c1c1c1;
+	border-radius: 4px;
+}
+
+[dir="rtl"] ::-webkit-scrollbar-thumb:hover {
+	background: #a8a8a8;
+}
