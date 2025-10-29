@@ -1,33 +1,57 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	
+	import SEOHead from '$lib/components/SEOHead.svelte';
+	import { generateHreflangLinks } from '$lib/utils/seo';
+
 	let widgetScript: HTMLScriptElement;
 	let codeExamples = {
 		basic: `<!-- Basic widget -->
 <div data-hijri-widget></div>
 <script src="${$page.url.origin}/hijri-widget.js"><\/script>`,
-		
+
 		arabic: `<!-- Arabic widget -->
-<div data-hijri-widget 
-     data-lang="ar" 
+<div data-hijri-widget
+     data-lang="ar"
      data-theme="light">
 </div>
 <script src="${$page.url.origin}/hijri-widget.js"><\/script>`,
-		
+
 		customCountry: `<!-- Custom country widget -->
-<div data-hijri-widget 
-     data-lang="en" 
-     data-country="MA" 
+<div data-hijri-widget
+     data-lang="en"
+     data-country="MA"
      data-theme="dark">
 </div>
 <script src="${$page.url.origin}/hijri-widget.js"><\/script>`,
-		
+
 		multiple: `<!-- Multiple widgets -->
 <div data-hijri-widget data-lang="en" data-country="SA"></div>
 <div data-hijri-widget data-lang="ar" data-country="EG"></div>
 <div data-hijri-widget data-lang="en" data-country="TR"></div>
 <script src="${$page.url.origin}/hijri-widget.js"><\/script>`
+	};
+
+	$: seoData = {
+		title: 'Hijri Date Widget - Embeddable Islamic Calendar',
+		description: 'Embed accurate Hijri dates on your website with our lightweight, customizable Islamic calendar widget. Easy integration with multiple themes and calculation methods.',
+		canonical: `${$page.url.origin}${$page.url.pathname}`,
+		openGraph: {
+			title: 'Hijri Date Widget - Embeddable Islamic Calendar',
+			description: 'Embed accurate Hijri dates on your website with our lightweight, customizable Islamic calendar widget.',
+			url: `${$page.url.origin}${$page.url.pathname}`,
+			type: 'website'
+		},
+		jsonLd: {
+			'@context': 'https://schema.org',
+			'@type': 'SoftwareApplication',
+			name: 'Hijri Date Widget',
+			description: 'Embeddable Islamic calendar widget for websites',
+			url: `${$page.url.origin}${$page.url.pathname}`,
+			applicationCategory: 'WebApplication',
+			operatingSystem: 'Web Browser'
+		},
+		hreflang: generateHreflangLinks($page.url.origin, '/widget')
 	};
 
 	onMount(() => {
@@ -52,33 +76,6 @@
 	}
 </script>
 
-<script lang="ts">
-	import { page } from '$app/stores';
-	import SEOHead from '$lib/components/SEOHead.svelte';
-	import { generateHreflangLinks } from '$lib/utils/seo';
-	
-	$: seoData = {
-		title: 'Hijri Date Widget - Embeddable Islamic Calendar',
-		description: 'Embed accurate Hijri dates on your website with our lightweight, customizable Islamic calendar widget. Easy integration with multiple themes and calculation methods.',
-		canonical: `${$page.url.origin}${$page.url.pathname}`,
-		openGraph: {
-			title: 'Hijri Date Widget - Embeddable Islamic Calendar',
-			description: 'Embed accurate Hijri dates on your website with our lightweight, customizable Islamic calendar widget.',
-			url: `${$page.url.origin}${$page.url.pathname}`,
-			type: 'website'
-		},
-		jsonLd: {
-			'@context': 'https://schema.org',
-			'@type': 'SoftwareApplication',
-			name: 'Hijri Date Widget',
-			description: 'Embeddable Islamic calendar widget for websites',
-			url: `${$page.url.origin}${$page.url.pathname}`,
-			applicationCategory: 'WebApplication',
-			operatingSystem: 'Web Browser'
-		},
-		hreflang: generateHreflangLinks($page.url.origin, '/widget')
-	};
-</script>
 
 <SEOHead seo={seoData} />
 
