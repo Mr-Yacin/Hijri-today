@@ -2,12 +2,48 @@
 	import { _ } from 'svelte-i18n';
 	import { currentLocale, formatDateNumber } from '$lib/i18n';
 	import { DateDisplay, Card, Button } from '$lib/components';
+	import { copyDateToClipboard, shareDateInfo, addDateToCalendar } from '$lib/utils/browser-actions';
 	import type { PageData } from './$types';
 	
 	export let data: PageData;
 	
 	// Extract data from server load
 	$: ({ hijriDate, gregorianDate, profile, method, country, error } = data);
+	
+	// Button states
+	let isLoading = {
+		copy: false,
+		share: false,
+		calendar: false
+	};
+	
+	// Action handlers
+	async function handleCopyDate() {
+		isLoading.copy = true;
+		try {
+			await copyDateToClipboard(hijriDate, gregorianDate);
+		} finally {
+			isLoading.copy = false;
+		}
+	}
+	
+	async function handleShareDate() {
+		isLoading.share = true;
+		try {
+			await shareDateInfo(hijriDate, gregorianDate);
+		} finally {
+			isLoading.share = false;
+		}
+	}
+	
+	async function handleAddToCalendar() {
+		isLoading.calendar = true;
+		try {
+			await addDateToCalendar(hijriDate, gregorianDate);
+		} finally {
+			isLoading.calendar = false;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -46,13 +82,28 @@
 				/>
 				
 				<div class="flex gap-4 justify-center mt-6 flex-wrap">
-					<Button variant="primary" icon="📋">
+					<Button 
+						variant="primary" 
+						icon="📋" 
+						loading={isLoading.copy}
+						on:click={handleCopyDate}
+					>
 						{$_('actions.copy_date')}
 					</Button>
-					<Button variant="outline" icon="📤">
+					<Button 
+						variant="outline" 
+						icon="📤" 
+						loading={isLoading.share}
+						on:click={handleShareDate}
+					>
 						{$_('actions.share_date')}
 					</Button>
-					<Button variant="outline" icon="📅">
+					<Button 
+						variant="outline" 
+						icon="📅" 
+						loading={isLoading.calendar}
+						on:click={handleAddToCalendar}
+					>
 						{$_('actions.add_to_calendar')}
 					</Button>
 				</div>

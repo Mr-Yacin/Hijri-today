@@ -32,7 +32,9 @@
 		"days": "days",
 		"same_date": "Same date",
 		"today_hijri": "Today's Hijri Date",
-		"method_explanation": "The Hijri date is calculated using the {method} method adopted in {country}."
+		"method_explanation": "The Hijri date is calculated using the {method} method adopted in {country}.",
+		"hijri_date": "Hijri Date",
+		"gregorian_date": "Gregorian Date"
 	},
 	"months": {
 		"gregorian": {

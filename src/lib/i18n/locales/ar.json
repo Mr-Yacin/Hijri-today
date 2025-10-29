@@ -32,7 +32,9 @@
 		"days": "أيام",
 		"same_date": "نفس التاريخ",
 		"today_hijri": "اليوم الهجري",
-		"method_explanation": "يتم حساب التاريخ الهجري باستخدام {method} المعتمد في {country}."
+		"method_explanation": "يتم حساب التاريخ الهجري باستخدام {method} المعتمد في {country}.",
+		"hijri_date": "التاريخ الهجري",
+		"gregorian_date": "التاريخ الميلادي"
 	},
 	"months": {
 		"gregorian": {
