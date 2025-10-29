@@ -1,49 +1,40 @@
 {
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"hello_world": "Hello, {name} from ar!",
 	"common": {
-		"today": "اليوم",
 		"convert": "تحويل",
-		"calendar": "التقويم",
 		"copy": "نسخ",
 		"share": "مشاركة",
-		"loading": "جاري التحميل...",
+		"today": "اليوم",
 		"error": "خطأ",
+		"loading": "جاري التحميل...",
 		"method": "الطريقة",
 		"country": "البلد",
-		"switch_language": "تبديل اللغة",
-		"close": "إغلاق"
+		"close": "إغلاق",
+		"switch_language": "تغيير اللغة"
 	},
 	"dates": {
 		"hijri": "هجري",
 		"gregorian": "ميلادي",
-		"today_hijri": "التاريخ الهجري اليوم",
-		"today_gregorian": "التاريخ الميلادي اليوم",
-		"convert_to_hijri": "تحويل إلى هجري",
-		"convert_to_gregorian": "تحويل إلى ميلادي",
 		"day": "يوم",
 		"month": "شهر",
 		"year": "سنة",
+		"convert_to_hijri": "تحويل إلى هجري",
+		"convert_to_gregorian": "تحويل إلى ميلادي",
+		"conversion_result": "نتيجة التحويل",
+		"method_comparison": "مقارنة الطرق",
+		"method_difference": "اختلاف الطرق",
+		"invalid_date": "تاريخ غير صحيح",
+		"date_out_of_range": "التاريخ خارج النطاق المدعوم",
+		"conversion_error": "حدث خطأ في التحويل",
 		"date_details": "تفاصيل التاريخ",
 		"alternative_method": "الطريقة البديلة",
 		"days": "أيام",
 		"same_date": "نفس التاريخ",
-		"compare_methods": "مقارنة الطرق",
-		"method_difference": "اختلاف الطريقة"
+		"today_hijri": "اليوم الهجري",
+		"method_explanation": "يتم حساب التاريخ الهجري باستخدام {method} المعتمد في {country}."
 	},
 	"months": {
-		"hijri": {
-			"1": "محرم",
-			"2": "صفر",
-			"3": "ربيع الأول",
-			"4": "ربيع الثاني",
-			"5": "جمادى الأولى",
-			"6": "جمادى الثانية",
-			"7": "رجب",
-			"8": "شعبان",
-			"9": "رمضان",
-			"10": "شوال",
-			"11": "ذو القعدة",
-			"12": "ذو الحجة"
-		},
 		"gregorian": {
 			"1": "يناير",
 			"2": "فبراير",
@@ -57,27 +48,55 @@
 			"10": "أكتوبر",
 			"11": "نوفمبر",
 			"12": "ديسمبر"
+		},
+		"hijri": {
+			"1": "محرم",
+			"2": "صفر",
+			"3": "ربيع الأول",
+			"4": "ربيع الثاني",
+			"5": "جمادى الأولى",
+			"6": "جمادى الثانية",
+			"7": "رجب",
+			"8": "شعبان",
+			"9": "رمضان",
+			"10": "شوال",
+			"11": "ذو القعدة",
+			"12": "ذو الحجة"
 		}
+	},
+	"methods": {
+		"ummalqura": "أم القرى",
+		"moonsighting_national": "الرؤية الوطنية",
+		"diyanet": "ديانت"
+	},
+	"ui": {
+		"select_month": "اختر الشهر",
+		"enter_valid_gregorian_date": "أدخل تاريخ ميلادي صحيح لرؤية التحويل",
+		"enter_valid_hijri_date": "أدخل تاريخ هجري صحيح لرؤية التحويل",
+		"same_as_current": "نفس النتيجة الحالية",
+		"hide_comparison": "إخفاء المقارنة",
+		"using_method": "باستخدام طريقة",
+		"method_for": "لـ",
+		"with_offset": "مع إزاحة",
+		"day_offset": "يوم",
+		"days_offset": "أيام"
+	},
+	"errors": {
+		"invalid_gregorian_date": "تاريخ ميلادي غير صحيح",
+		"invalid_hijri_date": "تاريخ هجري غير صحيح",
+		"conversion_error_server": "حدث خطأ في التحويل"
+	},
+	"actions": {
+		"share_date": "مشاركة التاريخ",
+		"copy_date": "نسخ التاريخ",
+		"add_to_calendar": "إضافة إلى التقويم"
 	},
 	"navigation": {
 		"home": "الرئيسية",
 		"today": "اليوم",
 		"convert": "تحويل",
 		"calendar": "التقويم",
-		"language": "اللغة",
 		"arabic": "العربية",
-		"english": "English",
-		"previous_month": "الشهر السابق",
-		"next_month": "الشهر التالي",
-		"jump_to_today": "الانتقال إلى اليوم"
-	},
-	"actions": {
-		"copy_date": "نسخ التاريخ",
-		"share_date": "مشاركة التاريخ",
-		"add_to_calendar": "إضافة إلى التقويم"
-	},
-	"formats": {
-		"date_format": "{day} {month} {year}",
-		"full_date_format": "{day} {month} {year} هـ"
+		"english": "English"
 	}
 }

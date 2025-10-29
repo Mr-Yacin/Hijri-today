@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
+	import { currentLocale } from '$lib/i18n';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
@@ -12,6 +13,9 @@
 
 	// Initialize engine
 	const engine = new HijriEngine();
+
+	// Check if translations are loaded
+	$: isTranslationReady = $_('ui.select_month') !== 'ui.select_month';
 
 	// State management
 	let activeTab: 'gToH' | 'hToG' = data.initialConversion.mode;
@@ -48,7 +52,10 @@
 
 	// Initialize error from server
 	if (data.initialConversion.error) {
-		conversionError = data.initialConversion.error;
+		// Check if it's a translation key or a direct message
+		conversionError = data.initialConversion.error.startsWith('errors.') 
+			? $_(`${data.initialConversion.error}`)
+			: data.initialConversion.error;
 	}
 
 	// Load available profiles for method comparison
@@ -68,7 +75,7 @@
 		if (month && (Number(month) < 1 || Number(month) > 12)) {
 			gValidation.month = $_('dates.invalid_date');
 		}
-		if (year && (Number(year) < data.supportedRange.gregorian.min.split('-')[0] || Number(year) > data.supportedRange.gregorian.max.split('-')[0])) {
+		if (year && (Number(year) < Number(data.supportedRange.gregorian.min.split('-')[0]) || Number(year) > Number(data.supportedRange.gregorian.max.split('-')[0]))) {
 			gValidation.year = $_('dates.date_out_of_range');
 		}
 
@@ -231,9 +238,15 @@
 	function generateMonthOptions(type: 'gregorian' | 'hijri') {
 		const options = [];
 		for (let i = 1; i <= 12; i++) {
+			const translationKey = `months.${type}.${i}`;
+			const translatedLabel = $_(`months.${type}.${i}`);
+			
+			// Fallback if translation is not loaded
+			const label = translatedLabel === translationKey ? `Month ${i}` : translatedLabel;
+			
 			options.push({
 				value: i,
-				label: $_(`months.${type}.${i}`)
+				label
 			});
 		}
 		return options;
@@ -385,6 +398,7 @@
 
 		<!-- Gregorian to Hijri Tab -->
 		{#if activeTab === 'gToH'}
+			{#if isTranslationReady}
 			<div class="grid md:grid-cols-2 gap-6">
 				<!-- Input Form -->
 				<Card title="{$_('dates.gregorian')} {$_('dates.day')}" variant="default" padding="medium">
@@ -419,7 +433,7 @@
 								class:border-red-300={gValidation.month}
 								class:border-gray-300={!gValidation.month}
 							>
-								<option value="">Select month</option>
+								<option value="">{$_('ui.select_month') === 'ui.select_month' ? 'Select month' : $_('ui.select_month')}</option>
 								{#each generateMonthOptions('gregorian') as option}
 									<option value={option.value}>{option.label}</option>
 								{/each}
@@ -481,15 +495,21 @@
 						</div>
 					{:else}
 						<div class="text-center py-8 text-gray-500">
-							Enter a valid Gregorian date to see the conversion
+							{$_('ui.enter_valid_gregorian_date')}
 						</div>
 					{/if}
 				</Card>
 			</div>
+			{:else}
+				<div class="text-center py-8">
+					<div class="text-gray-500">Loading translations...</div>
+				</div>
+			{/if}
 		{/if}
 
 		<!-- Hijri to Gregorian Tab -->
 		{#if activeTab === 'hToG'}
+			{#if isTranslationReady}
 			<div class="grid md:grid-cols-2 gap-6">
 				<!-- Input Form -->
 				<Card title="{$_('dates.hijri')} {$_('dates.day')}" variant="default" padding="medium">
@@ -524,7 +544,7 @@
 								class:border-red-300={hValidation.month}
 								class:border-gray-300={!hValidation.month}
 							>
-								<option value="">Select month</option>
+								<option value="">{$_('ui.select_month') === 'ui.select_month' ? 'Select month' : $_('ui.select_month')}</option>
 								{#each generateMonthOptions('hijri') as option}
 									<option value={option.value}>{option.label}</option>
 								{/each}
@@ -586,11 +606,16 @@
 						</div>
 					{:else}
 						<div class="text-center py-8 text-gray-500">
-							Enter a valid Hijri date to see the conversion
+							{$_('ui.enter_valid_hijri_date')}
 						</div>
 					{/if}
 				</Card>
 			</div>
+			{:else}
+				<div class="text-center py-8">
+					<div class="text-gray-500">Loading translations...</div>
+				</div>
+			{/if}
 		{/if}
 
 		<!-- Method Comparison Results -->
@@ -621,7 +646,7 @@
 											{comparison.difference}
 										</div>
 									{:else}
-										<div class="text-sm text-gray-500">Same as current</div>
+										<div class="text-sm text-gray-500">{$_('ui.same_as_current')}</div>
 									{/if}
 								</div>
 							</div>
@@ -629,7 +654,7 @@
 					</div>
 					<div class="mt-4 text-center">
 						<Button variant="ghost" size="small" on:click={() => showMethodComparison = false}>
-							Hide Comparison
+							{$_('ui.hide_comparison')}
 						</Button>
 					</div>
 				</Card>
@@ -640,9 +665,9 @@
 		<div class="mt-8 text-center">
 			<div class="bg-gray-50 rounded-lg p-4">
 				<p class="text-sm text-gray-600">
-					Using <strong>{$_(`methods.${data.profile.method}`)}</strong> method for <strong>{data.profile.country}</strong>
+					{$_('ui.using_method')} <strong>{$_(`methods.${data.profile.method}`)}</strong> {$_('ui.method_for')} <strong>{data.profile.country}</strong>
 					{#if data.profile.offset !== 0}
-						with {data.profile.offset > 0 ? '+' : ''}{data.profile.offset} day offset
+						{$_('ui.with_offset')} {data.profile.offset > 0 ? '+' : ''}{data.profile.offset} {Math.abs(data.profile.offset) === 1 ? $_('ui.day_offset') : $_('ui.days_offset')}
 					{/if}
 				</p>
 			</div>

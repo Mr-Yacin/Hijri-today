@@ -1,54 +1,76 @@
 import type { CountryProfile, ProfileDetector } from './types.js';
 import { getCountryProfile, getDefaultProfile, getProfileWithFallback } from './config.js';
 
-// IP-based country detection mapping (simplified for common ranges)
+// IP-based country detection mapping (expanded ranges - fallback only)
 const IP_COUNTRY_MAPPING: Record<string, string> = {
 	// Saudi Arabia
 	'37.': 'SA',
 	'46.': 'SA',
 	'78.186.': 'SA',
 	'188.': 'SA',
+	'212.138.': 'SA',
+	'213.130.': 'SA',
 	
 	// UAE
 	'5.': 'AE',
 	'31.': 'AE',
 	'213.': 'AE',
+	'85.158.': 'AE',
+	'94.56.': 'AE',
 	
 	// Egypt
 	'41.': 'EG',
 	'62.': 'EG',
 	'196.203.': 'EG',
+	'197.': 'EG',
+	'156.160.': 'EG',
 	
 	// Turkey
 	'78.': 'TR',
 	'88.': 'TR',
 	'176.': 'TR',
+	'95.': 'TR',
+	'212.156.': 'TR',
 	
-	// Morocco
-	'105.': 'MA',
-	'154.': 'MA',
-	'196.200.': 'MA',
+	// Morocco - Expanded ranges
+	'41.': 'MA',      // Maroc Telecom
+	'42.': 'MA',      // Multiple ISPs
+	'105.': 'MA',     // Maroc Telecom
+	'154.': 'MA',     // Orange Morocco
+	'160.': 'MA',     // INWI
+	'188.': 'MA',     // Multiple ISPs
+	'196.200.': 'MA', // Academic networks
+	'196.217.': 'MA', // Government networks
+	'212.217.': 'MA', // Commercial ISPs
+	'213.136.': 'MA', // Maroc Telecom
 	
 	// Pakistan
 	'39.': 'PK',
 	'58.': 'PK',
 	'103.31.': 'PK',
+	'119.': 'PK',
+	'180.': 'PK',
 	
 	// India
 	'14.': 'IN',
 	'27.': 'IN',
 	'103.21.': 'IN',
 	'117.': 'IN',
+	'122.': 'IN',
+	'157.': 'IN',
 	
 	// Indonesia
 	'36.': 'ID',
 	'103.28.': 'ID',
 	'114.': 'ID',
+	'125.': 'ID',
+	'180.': 'ID',
 	
 	// Malaysia
 	'103.16.': 'MY',
 	'175.': 'MY',
-	'202.': 'MY'
+	'202.': 'MY',
+	'210.': 'MY'
 };
 
 // Language to country mapping
@@ -106,17 +128,52 @@ const TIMEZONE_COUNTRY_MAPPING: Record<string, string> = {
 
 export class CountryProfileDetector implements ProfileDetector {
 	/**
-	 * Detect country from IP address
-	 * Uses simplified IP range mapping for common country detection
+	 * Detect country from Cloudflare's CF-IPCountry header (most reliable)
+	 * @param cfCountry - CF-IPCountry header value
+	 * @returns CountryProfile based on Cloudflare's geolocation
+	 */
+	detectFromCloudflare(cfCountry: string): CountryProfile {
+		if (!cfCountry || typeof cfCountry !== 'string') {
+			return getDefaultProfile();
+		}
+
+		const countryCode = cfCountry.trim().toUpperCase();
+		
+		// Direct country code mapping
+		const profile = getCountryProfile(countryCode);
+		if (profile) return profile;
+
+		return getDefaultProfile();
+	}
+
+	/**
+	 * Detect country from IP address using external geolocation service
+	 * Uses simplified IP range mapping as fallback
 	 * @param ip - IP address string
+	 * @param useGeolocationAPI - Whether to use external geolocation API
 	 * @returns CountryProfile based on IP geolocation
 	 */
-	detectFromIP(ip: string): CountryProfile {
+	async detectFromIP(ip: string, useGeolocationAPI: boolean = false): Promise<CountryProfile> {
 		if (!ip || typeof ip !== 'string') {
 			return getDefaultProfile();
 		}
 
-		// Extract first octet or first two octets for basic detection
+		// Try external geolocation API if enabled (server-side only)
+		if (useGeolocationAPI && typeof window === 'undefined') {
+			try {
+				const { getCachedGeolocation } = await import('./geolocation.js');
+				const geoResult = await getCachedGeolocation(ip);
+				
+				if (geoResult && geoResult.countryCode) {
+					const profile = getCountryProfile(geoResult.countryCode);
+					if (profile) return profile;
+				}
+			} catch (error) {
+				console.warn('Geolocation API failed, falling back to IP ranges:', error);
+			}
+		}
+
+		// Fallback to basic IP range detection
 		const ipParts = ip.split('.');
 		if (ipParts.length < 2) {
 			return getDefaultProfile();
@@ -269,40 +326,33 @@ export class CountryProfileDetector implements ProfileDetector {
 
 	/**
 	 * Comprehensive country detection using multiple methods
-	 * Tries user override first, then IP, language, and timezone in order
+	 * Improved priority order with Cloudflare detection first
 	 * @param options - Detection options
 	 * @returns CountryProfile using best available detection method
 	 */
-	detectCountry(options: {
+	async detectCountry(options: {
 		ip?: string;
 		acceptLanguage?: string;
 		timezone?: string;
 		cookies?: Record<string, string>;
-	}): CountryProfile {
+		cfCountry?: string; // Cloudflare CF-IPCountry header
+		useGeolocationAPI?: boolean; // Whether to use external geolocation
+	}): Promise<CountryProfile> {
 		// 1. Check user override first (highest priority)
 		if (options.cookies) {
 			const override = this.getUserOverride(options.cookies);
 			if (override) return override;
 		}
 
-		// 2. Try IP-based detection
-		if (options.ip) {
-			const ipProfile = this.detectFromIP(options.ip);
-			// Only use IP detection if it's not the default (i.e., we found a match)
-			if (ipProfile.country !== 'DEFAULT') {
-				return ipProfile;
+		// 2. Try Cloudflare country detection (most reliable)
+		if (options.cfCountry) {
+			const cfProfile = this.detectFromCloudflare(options.cfCountry);
+			if (cfProfile.country !== 'DEFAULT') {
+				return cfProfile;
 			}
 		}
 
-		// 3. Try language-based detection
-		if (options.acceptLanguage) {
-			const langProfile = this.detectFromLanguage(options.acceptLanguage);
-			if (langProfile.country !== 'DEFAULT') {
-				return langProfile;
-			}
-		}
-
-		// 4. Try timezone-based detection
+		// 3. Try timezone-based detection (more reliable than IP ranges)
 		if (options.timezone) {
 			const timezoneProfile = this.detectFromTimezone(options.timezone);
 			if (timezoneProfile.country !== 'DEFAULT') {
@@ -310,7 +360,18 @@ export class CountryProfileDetector implements ProfileDetector {
 			}
 		}
 
-		// 5. Fallback to default profile
+		// 4. Try IP-based detection (with optional geolocation API)
+		if (options.ip) {
+			const ipProfile = await this.detectFromIP(options.ip, options.useGeolocationAPI);
+			if (ipProfile.country !== 'DEFAULT') {
+				return ipProfile;
+			}
+		}
+
+		// 5. Skip language detection (unreliable for location)
+		// Language is user preference, not location indicator
+
+		// 6. Fallback to default profile
 		return getDefaultProfile();
 	}
 }

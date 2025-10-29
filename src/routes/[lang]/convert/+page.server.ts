@@ -46,7 +46,7 @@ export const load: PageServerLoad = async ({ url, request, cookies }) => {
 						mode: 'gToH'
 					};
 				} else {
-					initialConversion.error = 'Invalid Gregorian date';
+					initialConversion.error = 'errors.invalid_gregorian_date';
 				}
 			}
 		} else if (mode === 'hToG') {
@@ -69,12 +69,12 @@ export const load: PageServerLoad = async ({ url, request, cookies }) => {
 						mode: 'hToG'
 					};
 				} else {
-					initialConversion.error = 'Invalid Hijri date';
+					initialConversion.error = 'errors.invalid_hijri_date';
 				}
 			}
 		}
 	} catch (error) {
-		initialConversion.error = error instanceof Error ? error.message : 'Conversion error';
+		initialConversion.error = error instanceof Error ? error.message : 'errors.conversion_error_server';
 	}
 	
 	// Get supported date ranges for validation

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import { currentLocale, formatDateNumber } from '$lib/i18n/setup.js';
-	import type { CalendarCell } from '../routes/[lang]/calendar/[year]/[month]/+page.server.js';
+	import type { CalendarCell } from '../../routes/[lang]/calendar/[year]/[month]/+page.server.js';
 	import type { CountryProfile } from '$lib/hijri/types.js';
 	
 	export let cell: CalendarCell;
@@ -102,21 +102,23 @@
 <div 
 	class="popup-backdrop" 
 	on:click={handleBackdropClick}
+	on:keydown={handleKeydown}
 	role="dialog"
 	aria-modal="true"
 	aria-labelledby="popup-title"
+	tabindex="-1"
 >
 	<!-- Popup Content -->
 	<div class="popup-content" class:rtl={isRTL}>
 		<!-- Header -->
 		<header class="popup-header">
 			<h2 id="popup-title" class="popup-title">
-				{$_('dates.date_details') || 'Date Details'}
+				{$_('dates.date_details')}
 			</h2>
 			<button 
 				class="close-button"
 				on:click={onClose}
-				aria-label={$_('common.close') || 'Close'}
+				aria-label={$_('common.close')}
 			>
 				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -181,7 +183,7 @@
 			{#if alternativeProfile && alternativeCell}
 				<div class="alternative-method">
 					<div class="method-section">
-						<span class="method-label">{$_('dates.alternative_method') || 'Alternative'}:</span>
+						<span class="method-label">{$_('dates.alternative_method')}:</span>
 						<span class="method-value">{alternativeProfile.displayName[locale]}</span>
 					</div>
 					<div class="date-difference">
@@ -189,10 +191,10 @@
 							<span class="difference-indicator">
 								{alternativeCell.hijriDate.day > cell.hijriDate.day ? '+' : ''}
 								{alternativeCell.hijriDate.day - cell.hijriDate.day} 
-								{$_('dates.days') || 'days'}
+								{$_('dates.days')}
 							</span>
 						{:else}
-							<span class="no-difference">{$_('dates.same_date') || 'Same date'}</span>
+							<span class="no-difference">{$_('dates.same_date')}</span>
 						{/if}
 					</div>
 				</div>

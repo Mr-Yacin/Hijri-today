@@ -1,31 +1,43 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
 	import { setupI18n, setLocale, textDirection, currentLocale } from '$lib/i18n';
 	import { Navigation } from '$lib/components';
 	import '../../app.css';
+	import type { LayoutData } from './$types';
 
-	// Get language from route parameter
-	$: lang = $page.params.lang as 'ar' | 'en';
+	export let data: LayoutData;
 
-	// Initialize i18n on mount
+	let isI18nReady = false;
+
+	// Initialize i18n on mount with server data
 	onMount(async () => {
-		setupI18n(lang);
-		await setLocale(lang);
+		await setupI18n(data.lang);
+		await setLocale(data.lang);
+		isI18nReady = true;
 	});
 
 	// Update locale when route changes
-	$: if (lang && (lang === 'ar' || lang === 'en')) {
-		setLocale(lang);
+	$: if (isI18nReady && data.lang && (data.lang === 'ar' || data.lang === 'en')) {
+		if ($currentLocale !== data.lang) {
+			setLocale(data.lang);
+		}
 	}
 </script>
 
-<div class="app" dir={$textDirection} lang={$currentLocale}>
-	<Navigation />
-	<main class="main-content">
-		<slot />
-	</main>
-</div>
+{#if isI18nReady}
+	<div class="app" dir={$textDirection} lang={$currentLocale}>
+		<Navigation />
+		<main class="main-content">
+			<slot />
+		</main>
+	</div>
+{:else}
+	<div class="app loading" dir={data.lang === 'ar' ? 'rtl' : 'ltr'} lang={data.lang}>
+		<div class="loading-container">
+			<div class="loading-spinner"></div>
+		</div>
+	</div>
+{/if}
 
 <style>
 	.app {
@@ -45,6 +57,32 @@
 
 	:global([dir="ltr"]) {
 		text-align: left;
+	}
+
+	/* Loading state */
+	.loading {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 100vh;
+	}
+
+	.loading-container {
+		text-align: center;
+	}
+
+	.loading-spinner {
+		width: 40px;
+		height: 40px;
+		border: 4px solid #f3f4f6;
+		border-top: 4px solid #3b82f6;
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
 	}
 
 	/* Global RTL utilities */

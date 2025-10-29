@@ -216,11 +216,7 @@
 				<!-- Method explanation -->
 				<div class="mt-4 p-4 bg-blue-50 rounded-lg">
 					<p class="text-sm text-blue-800">
-						{#if $currentLocale === 'ar'}
-							يتم حساب التاريخ الهجري باستخدام {methodDisplayName} المعتمد في {country}.
-						{:else}
-							The Hijri date is calculated using the {methodDisplayName} method adopted in {country}.
-						{/if}
+						{$_('dates.method_explanation', { values: { method: methodDisplayName, country: country } })}
 					</p>
 				</div>
 			</div>

@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { HijriEngine } from '$lib/hijri/engine.js';
-import { CountryProfileDetector } from '$lib/profiles/detector.js';
+import { detectCountryProfile, getUserProfileOverride } from '$lib/profiles/utils.js';
 import type { CountryProfile, HijriDate, GregorianDate } from '$lib/hijri/types.js';
 import { error } from '@sveltejs/kit';
 
@@ -23,9 +23,8 @@ export interface CalendarMonth {
 	todayGregorian: GregorianDate;
 }
 
-// Initialize engine and detector
+// Initialize engine
 const hijriEngine = new HijriEngine();
-const profileDetector = new CountryProfileDetector();
 
 // Generate calendar cells for a given Hijri month
 function generateCalendarCells(
@@ -153,7 +152,7 @@ function isDateToday(
 	);
 }
 
-export const load: PageServerLoad = async ({ params, request, cookies, getClientAddress }) => {
+export const load: PageServerLoad = async ({ params, request, cookies }) => {
 	try {
 		// Parse and validate parameters
 		const year = parseInt(params.year);
@@ -169,24 +168,9 @@ export const load: PageServerLoad = async ({ params, request, cookies, getClient
 			throw error(400, `Year ${year} is outside supported range (${supportedRange.hijri.min}-${supportedRange.hijri.max} AH)`);
 		}
 		
-		// Extract detection parameters from request
-		const clientIP = getClientAddress();
-		const acceptLanguage = request.headers.get('accept-language') || '';
-		const timezone = 'UTC'; // Fallback for edge deployment
-		
-		// Convert cookies to record
-		const cookieRecord: Record<string, string> = {};
-		cookies.getAll().forEach(cookie => {
-			cookieRecord[cookie.name] = cookie.value;
-		});
-		
-		// Detect country profile
-		const profile = profileDetector.detectCountry({
-			ip: clientIP,
-			acceptLanguage,
-			timezone,
-			cookies: cookieRecord
-		});
+		// Detect country profile using the same method as convert page
+		const detectedProfile = await detectCountryProfile(request);
+		const profile = getUserProfileOverride(cookies) || detectedProfile;
 		
 		// Get today's dates for highlighting
 		const todayHijri = hijriEngine.getTodayHijri(profile);

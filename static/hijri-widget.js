@@ -14,6 +14,26 @@
 (function() {
     'use strict';
 
+    // Widget translations
+    const WIDGET_TRANSLATIONS = {
+        en: {
+            method: 'Method',
+            country: 'Country',
+            error_loading: 'Error loading Hijri date',
+            loading: 'Loading...',
+            copy: 'Copy',
+            copied: 'Copied!'
+        },
+        ar: {
+            method: 'الطريقة',
+            country: 'البلد',
+            error_loading: 'خطأ في تحميل التاريخ الهجري',
+            loading: 'جاري التحميل...',
+            copy: 'نسخ',
+            copied: 'تم النسخ!'
+        }
+    };
+
     // Widget configuration
     const WIDGET_CONFIG = {
         apiBaseUrl: window.location.origin,
@@ -71,6 +91,14 @@
          */
         isValidTheme: function(theme) {
             return ['light', 'dark', 'auto', 'compact', 'minimal'].includes(theme);
+        },
+
+        /**
+         * Get translated text
+         */
+        translate: function(key, lang) {
+            const translations = WIDGET_TRANSLATIONS[lang] || WIDGET_TRANSLATIONS.en;
+            return translations[key] || key;
         },
 
         /**
@@ -315,12 +343,16 @@
             const isRtl = this.config.lang === 'ar';
             const dir = isRtl ? 'rtl' : 'ltr';
             
+            const loadingText = utils.translate('loading', this.config.lang);
+            const copyText = utils.translate('copy', this.config.lang);
+            const copyTitle = `${copyText} ${utils.translate('method', this.config.lang)}`;
+            
             this.element.innerHTML = `
                 <div class="hijri-widget-container" dir="${dir}">
                     <div class="hijri-widget-content">
                         <div class="hijri-widget-loading" style="display: none;">
                             <div class="hijri-widget-spinner"></div>
-                            <span class="hijri-widget-loading-text">${isRtl ? 'جاري التحميل...' : 'Loading...'}</span>
+                            <span class="hijri-widget-loading-text">${loadingText}</span>
                         </div>
                         <div class="hijri-widget-error" style="display: none;">
                             <span class="hijri-widget-error-icon">⚠️</span>
@@ -332,9 +364,9 @@
                                 <div class="hijri-widget-gregorian-date"></div>
                             </div>
                             <div class="hijri-widget-actions">
-                                <button class="hijri-widget-copy-btn" type="button" title="${isRtl ? 'نسخ التاريخ' : 'Copy date'}">
+                                <button class="hijri-widget-copy-btn" type="button" title="${copyTitle}">
                                     <span class="hijri-widget-copy-icon">📋</span>
-                                    <span class="hijri-widget-copy-text">${isRtl ? 'نسخ' : 'Copy'}</span>
+                                    <span class="hijri-widget-copy-text">${copyText}</span>
                                 </button>
                             </div>
                             <div class="hijri-widget-method">
@@ -388,10 +420,8 @@
             }
 
             if (methodEl) {
-                const methodText = this.config.lang === 'ar' ? 
-                    `الطريقة: ${this.data.method}` : 
-                    `Method: ${this.data.method}`;
-                methodEl.textContent = methodText;
+                const methodLabel = utils.translate('method', this.config.lang);
+                methodEl.textContent = `${methodLabel}: ${this.data.method}`;
             }
         },
 
@@ -409,9 +439,7 @@
             if (error) error.style.display = 'block';
             
             if (errorText) {
-                const errorMessage = this.config.lang === 'ar' ? 
-                    'خطأ في تحميل التاريخ الهجري' : 
-                    'Error loading Hijri date';
+                const errorMessage = utils.translate('error_loading', this.config.lang);
                 errorText.textContent = errorMessage;
             }
         },
@@ -448,7 +476,7 @@
                 .then(function() {
                     if (copyTextEl) {
                         const originalText = copyTextEl.textContent;
-                        const successText = this.config.lang === 'ar' ? 'تم النسخ!' : 'Copied!';
+                        const successText = utils.translate('copied', this.config.lang);
                         
                         copyTextEl.textContent = successText;
                         if (copyBtn) copyBtn.classList.add('hijri-widget-copied');

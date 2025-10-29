@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { HijriEngine } from '$lib/hijri/engine.js';
-import { CountryProfileDetector } from '$lib/profiles/detector.js';
+import { detectCountryProfile, getUserProfileOverride } from '$lib/profiles/utils.js';
 import type { CountryProfile, HijriDate, GregorianDate } from '$lib/hijri/types.js';
 
 // Cache interface for edge caching
@@ -14,9 +14,8 @@ interface TodayCache {
 	timestamp: number;
 }
 
-// Initialize engine and detector
+// Initialize engine
 const hijriEngine = new HijriEngine();
-const profileDetector = new CountryProfileDetector();
 
 // Cache TTL in milliseconds (1 hour)
 const CACHE_TTL = 60 * 60 * 1000;
@@ -70,30 +69,11 @@ function generateTodayData(profile: CountryProfile): TodayCache {
 	};
 }
 
-export const load: PageServerLoad = async ({ request, cookies, getClientAddress, params }) => {
+export const load: PageServerLoad = async ({ request, cookies, params }) => {
 	try {
-		// Extract detection parameters from request
-		const clientIP = getClientAddress();
-		const acceptLanguage = request.headers.get('accept-language') || '';
-		const userAgent = request.headers.get('user-agent') || '';
-		
-		// Get timezone from user agent or default (simplified approach)
-		// In production, this would use more sophisticated timezone detection
-		const timezone = 'UTC'; // Fallback for edge deployment
-		
-		// Convert cookies to record
-		const cookieRecord: Record<string, string> = {};
-		cookies.getAll().forEach(cookie => {
-			cookieRecord[cookie.name] = cookie.value;
-		});
-		
-		// Detect country profile using multiple methods
-		const profile = profileDetector.detectCountry({
-			ip: clientIP,
-			acceptLanguage,
-			timezone,
-			cookies: cookieRecord
-		});
+		// Detect country profile using the same method as convert page
+		const detectedProfile = await detectCountryProfile(request);
+		const profile = getUserProfileOverride(cookies) || detectedProfile;
 		
 		const cacheKey = getCacheKey(profile.country);
 		
@@ -138,7 +118,8 @@ export const load: PageServerLoad = async ({ request, cookies, getClientAddress,
 		console.error('Error in today page server load:', error);
 		
 		// Fallback to default profile and current date
-		const defaultProfile = profileDetector.detectCountry({});
+		const { getDefaultProfile } = await import('$lib/profiles/config.js');
+		const defaultProfile = getDefaultProfile();
 		const fallbackData = generateTodayData(defaultProfile);
 		
 		return {

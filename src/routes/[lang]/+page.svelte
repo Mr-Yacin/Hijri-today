@@ -1,11 +1,18 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { currentLocale } from '$lib/i18n';
+	import { currentLocale, formatDateNumber } from '$lib/i18n';
 	import { DateDisplay, Card, Button } from '$lib/components';
+	import type { PageData } from './$types';
+	
+	export let data: PageData;
+	
+	// Extract data from server load
+	$: ({ hijriDate, gregorianDate, profile, method, country, error } = data);
 </script>
 
 <svelte:head>
-	<title>{$_('common.today')} - Hijri Date Platform</title>
+	<title>{$_('dates.today_hijri')} - {formatDateNumber(hijriDate.day, $currentLocale)} {$_(`months.hijri.${hijriDate.month}`)} {formatDateNumber(hijriDate.year, $currentLocale)} - Hijri Date Platform</title>
+	<meta name="description" content="{$_('dates.today_hijri')} - {formatDateNumber(hijriDate.day, $currentLocale)} {$_(`months.hijri.${hijriDate.month}`)} {formatDateNumber(hijriDate.year, $currentLocale)} {$currentLocale === 'ar' ? 'هـ' : 'AH'}" />
 </svelte:head>
 
 <div class="container mx-auto px-4 py-8">
@@ -19,15 +26,21 @@
 	</div>
 	
 	<div class="max-w-2xl mx-auto">
+		{#if error}
+			<div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4" role="alert">
+				<p class="text-sm">{error}</p>
+			</div>
+		{/if}
+		
 		<Card title="" variant="primary" padding="large">
 			<div class="text-center">
 				<DateDisplay
-					hijriDay={28}
-					hijriMonth={5}
-					hijriYear={1447}
-					gregorianDay={28}
-					gregorianMonth={10}
-					gregorianYear={2025}
+					hijriDay={hijriDate.day}
+					hijriMonth={hijriDate.month}
+					hijriYear={hijriDate.year}
+					gregorianDay={gregorianDate.day}
+					gregorianMonth={gregorianDate.month}
+					gregorianYear={gregorianDate.year}
 					size="large"
 					showBoth={true}
 				/>
@@ -47,8 +60,8 @@
 		</Card>
 		
 		<div class="mt-6 text-center text-sm text-gray-500">
-			<p>{$_('common.method')}: Umm al-Qura</p>
-			<p>{$_('common.country')}: Saudi Arabia</p>
+			<p>{$_('common.method')}: {$_(`methods.${method}`)}</p>
+			<p>{$_('common.country')}: {profile.displayName[$currentLocale] || country}</p>
 		</div>
 	</div>
 </div>

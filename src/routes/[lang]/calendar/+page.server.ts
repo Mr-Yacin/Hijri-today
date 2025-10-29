@@ -1,31 +1,15 @@
 import type { PageServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 import { HijriEngine } from '$lib/hijri/engine.js';
-import { CountryProfileDetector } from '$lib/profiles/detector.js';
+import { detectCountryProfile, getUserProfileOverride } from '$lib/profiles/utils.js';
 
 const hijriEngine = new HijriEngine();
-const profileDetector = new CountryProfileDetector();
 
-export const load: PageServerLoad = async ({ request, cookies, getClientAddress, params }) => {
+export const load: PageServerLoad = async ({ request, cookies, params }) => {
 	try {
-		// Extract detection parameters from request
-		const clientIP = getClientAddress();
-		const acceptLanguage = request.headers.get('accept-language') || '';
-		const timezone = 'UTC'; // Fallback for edge deployment
-		
-		// Convert cookies to record
-		const cookieRecord: Record<string, string> = {};
-		cookies.getAll().forEach(cookie => {
-			cookieRecord[cookie.name] = cookie.value;
-		});
-		
-		// Detect country profile
-		const profile = profileDetector.detectCountry({
-			ip: clientIP,
-			acceptLanguage,
-			timezone,
-			cookies: cookieRecord
-		});
+		// Detect country profile using the same method as convert page
+		const detectedProfile = await detectCountryProfile(request);
+		const profile = getUserProfileOverride(cookies) || detectedProfile;
 		
 		// Get today's Hijri date
 		const todayHijri = hijriEngine.getTodayHijri(profile);

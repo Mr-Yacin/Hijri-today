@@ -22,17 +22,22 @@ export async function detectCountryFromRequest(request: Request): Promise<Countr
 	const cookieHeader = request.headers.get('cookie') || '';
 	const cookies = parseCookies(cookieHeader);
 	
+	// Get Cloudflare country detection (most reliable)
+	const cfCountry = request.headers.get('cf-ipcountry') || '';
+	
 	// Try to get timezone from cookies or headers
 	const timezone = cookies['timezone'] || 
 	                request.headers.get('cf-timezone') || 
 	                Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-	// Use comprehensive detection
-	return detector.detectCountry({
+	// Use comprehensive detection with improved priority
+	return await detector.detectCountry({
 		ip: ip.split(',')[0].trim(), // Use first IP if multiple
 		acceptLanguage,
 		timezone,
-		cookies
+		cookies,
+		cfCountry, // Add Cloudflare detection
+		useGeolocationAPI: true // Enable geolocation API for better accuracy
 	});
 }
 
@@ -41,19 +46,20 @@ export async function detectCountryFromRequest(request: Request): Promise<Countr
  * @param options - Browser detection options
  * @returns CountryProfile - Detected country profile
  */
-export function detectCountryFromBrowser(options: {
+export async function detectCountryFromBrowser(options: {
 	cookies?: Record<string, string>;
 	language?: string;
 	timezone?: string;
-} = {}): CountryProfile {
+} = {}): Promise<CountryProfile> {
 	const cookies = options.cookies || {};
 	const language = options.language || navigator.language;
 	const timezone = options.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-	return detector.detectCountry({
+	return await detector.detectCountry({
 		acceptLanguage: language,
 		timezone,
-		cookies
+		cookies,
+		useGeolocationAPI: false // Don't use API in browser
 	});
 }
 

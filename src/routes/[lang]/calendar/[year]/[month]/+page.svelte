@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { _ } from 'svelte-i18n';
-	import { currentLocale, formatDateNumber } from '$lib/i18n/setup.js';
+	import { formatDateNumber } from '$lib/i18n/setup.js';
 	import { HijriEngine } from '$lib/hijri/engine.js';
 	import { getCountryProfiles } from '$lib/profiles/config.js';
 	import CalendarCellPopup from '$lib/components/CalendarCellPopup.svelte';
@@ -13,7 +13,7 @@
 	export let data: PageData;
 	
 	$: calendar = data.calendar;
-	$: locale = $currentLocale;
+	$: locale = ($page.params.lang === 'ar' ? 'ar' : 'en') as 'ar' | 'en';
 	$: isRTL = locale === 'ar';
 	
 	// State for popup and method toggle
@@ -252,7 +252,7 @@
 				on:click={toggleMethodComparison}
 				disabled={alternativeProfiles.length === 0}
 			>
-				{$_('dates.compare_methods') || 'Compare Methods'}
+				{$_('dates.method_comparison')}
 			</button>
 			<button 
 				class="today-button"
@@ -313,10 +313,10 @@
 	<footer class="calendar-footer">
 		<div class="method-info">
 			<span class="method-label">{$_('common.method')}:</span>
-			<span class="method-value">{calendar.profile.displayName[locale]}</span>
+			<span class="method-value">{calendar.profile.displayName[locale as 'ar' | 'en']}</span>
 			{#if showMethodToggle && alternativeProfile}
 				<span class="alternative-method-info">
-					vs {alternativeProfile.displayName[locale]}
+					vs {alternativeProfile.displayName[locale as 'ar' | 'en']}
 				</span>
 			{/if}
 		</div>
@@ -332,7 +332,7 @@
 			{#if showMethodToggle}
 				<div class="legend-item">
 					<div class="legend-color difference-color"></div>
-					<span>{$_('dates.method_difference') || 'Method Difference'}</span>
+					<span>{$_('dates.method_difference')}</span>
 				</div>
 			{/if}
 		</div>
