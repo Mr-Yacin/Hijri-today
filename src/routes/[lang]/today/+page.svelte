@@ -5,6 +5,8 @@
 	import DateDisplay from '$lib/components/DateDisplay.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Card from '$lib/components/Card.svelte';
+	import SEOHead from '$lib/components/SEOHead.svelte';
+	import { generateDateSEO, generateHreflangLinks } from '$lib/utils/seo';
 	import type { PageData } from './$types';
 	
 	export let data: PageData;
@@ -15,6 +17,17 @@
 	// Format dates for display
 	$: hijriMonthName = $_(`months.hijri.${hijriDate.month}`);
 	$: gregorianMonthName = $_(`months.gregorian.${gregorianDate.month}`);
+	
+	// Generate enhanced SEO data
+	$: seoData = generateDateSEO(
+		hijriDate,
+		gregorianDate,
+		$currentLocale,
+		$page.url.origin,
+		$page.url.pathname,
+		hijriMonthName
+	);
+	$: seoData.hreflang = generateHreflangLinks($page.url.origin, $page.url.pathname);
 	
 	// Method display names
 	$: methodDisplayName = profile.displayName[$currentLocale];
@@ -95,33 +108,10 @@
 		URL.revokeObjectURL(url);
 	}
 	
-	// JSON-LD structured data
-	$: jsonLd = {
-		"@context": "https://schema.org",
-		"@type": "WebPage",
-		"name": $_('dates.today_hijri'),
-		"description": `${$_('dates.today_hijri')} - ${formatDateNumber(hijriDate.day, $currentLocale)} ${hijriMonthName} ${formatDateNumber(hijriDate.year, $currentLocale)}`,
-		"url": $page.url.toString(),
-		"mainEntity": {
-			"@type": "Event",
-			"name": `${formatDateNumber(hijriDate.day, $currentLocale)} ${hijriMonthName} ${formatDateNumber(hijriDate.year, $currentLocale)}`,
-			"startDate": `${gregorianDate.year}-${gregorianDate.month.toString().padStart(2, '0')}-${gregorianDate.day.toString().padStart(2, '0')}`,
-			"description": `${$_('dates.hijri')} ${formatDateNumber(hijriDate.day, $currentLocale)} ${hijriMonthName} ${formatDateNumber(hijriDate.year, $currentLocale)} ${$currentLocale === 'ar' ? 'هـ' : 'AH'}`
-		}
-	};
+
 </script>
 
-<svelte:head>
-	<title>{$_('dates.today_hijri')} - {formatDateNumber(hijriDate.day, $currentLocale)} {hijriMonthName} {formatDateNumber(hijriDate.year, $currentLocale)}</title>
-	<meta name="description" content="{$_('dates.today_hijri')} - {formatDateNumber(hijriDate.day, $currentLocale)} {hijriMonthName} {formatDateNumber(hijriDate.year, $currentLocale)} {$currentLocale === 'ar' ? 'هـ' : 'AH'}" />
-	<meta property="og:title" content="{$_('dates.today_hijri')} - {formatDateNumber(hijriDate.day, $currentLocale)} {hijriMonthName} {formatDateNumber(hijriDate.year, $currentLocale)}" />
-	<meta property="og:description" content="{$_('dates.today_hijri')} - {formatDateNumber(hijriDate.day, $currentLocale)} {hijriMonthName} {formatDateNumber(hijriDate.year, $currentLocale)} {$currentLocale === 'ar' ? 'هـ' : 'AH'}" />
-	<meta property="og:url" content="{$page.url.toString()}" />
-	<meta property="og:type" content="website" />
-	
-	<!-- JSON-LD structured data -->
-	{@html `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`}
-</svelte:head>
+<SEOHead seo={seoData} />
 
 <main class="container mx-auto px-4 py-8" dir={$textDirection}>
 	<!-- Answer-first content structure -->

@@ -6,6 +6,8 @@
 	import { HijriEngine } from '$lib/hijri/engine.js';
 	import { getCountryProfiles } from '$lib/profiles/config.js';
 	import CalendarCellPopup from '$lib/components/CalendarCellPopup.svelte';
+	import SEOHead from '$lib/components/SEOHead.svelte';
+	import { generateCalendarSEO, generateHreflangLinks } from '$lib/utils/seo';
 	import type { PageData } from './$types';
 	import type { CalendarCell } from './+page.server.js';
 	import type { CountryProfile } from '$lib/hijri/types.js';
@@ -15,6 +17,18 @@
 	$: calendar = data.calendar;
 	$: locale = ($page.params.lang === 'ar' ? 'ar' : 'en') as 'ar' | 'en';
 	$: isRTL = locale === 'ar';
+	
+	// Generate SEO data for calendar page
+	$: monthName = getHijriMonthName(calendar.hijriMonth);
+	$: seoData = generateCalendarSEO(
+		calendar.hijriYear,
+		calendar.hijriMonth,
+		monthName,
+		locale,
+		$page.url.origin,
+		$page.url.pathname
+	);
+	$: seoData.hreflang = generateHreflangLinks($page.url.origin, $page.url.pathname);
 	
 	// State for popup and method toggle
 	let selectedCell: CalendarCell | null = null;
@@ -203,6 +217,8 @@
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
+
+<SEOHead seo={seoData} />
 
 <div class="calendar-container" class:rtl={isRTL}>
 	<!-- Calendar Header with Navigation -->

@@ -1,11 +1,41 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import { _ } from 'svelte-i18n';
-	import { Card, Button } from '$lib/components';
+	import { currentLocale } from '$lib/i18n';
+	import { Card, Button, SEOHead } from '$lib/components';
+	import { generateHreflangLinks } from '$lib/utils/seo';
+	
+	// Generate SEO data for calendar overview page
+	$: isArabic = $currentLocale === 'ar';
+	$: seoData = {
+		title: isArabic ? 'التقويم الهجري - تقويم إسلامي شامل' : 'Hijri Calendar - Complete Islamic Calendar',
+		description: isArabic 
+			? 'تقويم هجري شامل مع التواريخ الميلادية المقابلة - تقويم إسلامي دقيق لجميع الأشهر والسنوات'
+			: 'Complete Hijri calendar with corresponding Gregorian dates - Accurate Islamic calendar for all months and years',
+		canonical: `${$page.url.origin}${$page.url.pathname}`,
+		openGraph: {
+			title: isArabic ? 'التقويم الهجري - تقويم إسلامي شامل' : 'Hijri Calendar - Complete Islamic Calendar',
+			description: isArabic 
+				? 'تقويم هجري شامل مع التواريخ الميلادية المقابلة'
+				: 'Complete Hijri calendar with corresponding Gregorian dates',
+			url: `${$page.url.origin}${$page.url.pathname}`,
+			type: 'website'
+		},
+		jsonLd: {
+			'@context': 'https://schema.org',
+			'@type': 'WebApplication',
+			name: isArabic ? 'التقويم الهجري' : 'Hijri Calendar',
+			description: isArabic 
+				? 'تقويم هجري شامل مع التواريخ الميلادية المقابلة'
+				: 'Complete Hijri calendar with corresponding Gregorian dates',
+			url: `${$page.url.origin}${$page.url.pathname}`,
+			applicationCategory: 'UtilityApplication'
+		},
+		hreflang: generateHreflangLinks($page.url.origin, $page.url.pathname)
+	};
 </script>
 
-<svelte:head>
-	<title>{$_('common.calendar')} - Hijri Date Platform</title>
-</svelte:head>
+<SEOHead seo={seoData} />
 
 <div class="container mx-auto px-4 py-8">
 	<div class="text-center mb-8">

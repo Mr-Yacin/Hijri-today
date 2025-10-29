@@ -32,7 +32,7 @@
   "EG": {
     "country": "EG",
     "method": "ummalqura",
-    "offset": -1,
+    "offset": 0,
     "displayName": {
       "ar": "أم القرى (مصر)",
       "en": "Umm al-Qura (Egypt)"

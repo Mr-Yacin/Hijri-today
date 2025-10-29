@@ -127,3 +127,102 @@ export const GET: RequestHandler = async ({ url, request, cookies, getClientAddr
 		}, { status: 500 });
 	}
 };
+
+export const POST: RequestHandler = async ({ request, cookies, getClientAddress }) => {
+	const startTime = Date.now();
+	
+	try {
+		// Apply rate limiting
+		const clientIP = getClientAddress();
+		const rateLimitResult = await rateLimit(clientIP, 'api-conversion');
+		
+		if (!rateLimitResult.allowed) {
+			return json({
+				error: {
+					code: 'RATE_LIMIT_EXCEEDED',
+					message: 'Too many requests. Please try again later.',
+					retryAfter: rateLimitResult.retryAfter
+				}
+			}, { 
+				status: 429,
+				headers: {
+					'Retry-After': rateLimitResult.retryAfter?.toString() || '60'
+				}
+			});
+		}
+
+		const body = await request.json();
+		const { year, month, day, country } = body;
+
+		if (!year || !month || !day) {
+			return json({
+				error: {
+					code: 'MISSING_PARAMETERS',
+					message: 'Missing required parameters: year, month, day'
+				}
+			}, { status: 400 });
+		}
+
+		// Initialize engine and get profile
+		const engine = new HijriEngine();
+		let profile;
+		
+		if (country) {
+			profile = getProfileByCountry(country);
+			if (!profile) {
+				return json({
+					error: {
+						code: 'INVALID_COUNTRY',
+						message: `Unsupported country code: ${country}`
+					}
+				}, { status: 400 });
+			}
+		} else {
+			const detectedProfile = await detectCountryProfile(request);
+			profile = getUserProfileOverride(cookies) || detectedProfile;
+		}
+
+		const gregorianDate: GregorianDate = {
+			year: parseInt(year),
+			month: parseInt(month),
+			day: parseInt(day)
+		};
+
+		if (!engine.isValidGregorianDate(gregorianDate)) {
+			return json({
+				error: {
+					code: 'INVALID_DATE',
+					message: 'Invalid Gregorian date or date out of supported range'
+				}
+			}, { status: 400 });
+		}
+
+		const hijriResult = engine.gregorianToHijri(gregorianDate, profile);
+		const processingTime = Date.now() - startTime;
+
+		return json({
+			hijri: hijriResult,
+			gregorian: gregorianDate,
+			method: profile.method,
+			country: profile.country,
+			offset: profile.offset,
+			processingTime
+		}, {
+			headers: {
+				'Cache-Control': 'public, max-age=3600',
+				'X-RateLimit-Remaining': rateLimitResult.remaining?.toString() || '0'
+			}
+		});
+
+	} catch (error) {
+		const processingTime = Date.now() - startTime;
+		
+		return json({
+			error: {
+				code: 'CONVERSION_ERROR',
+				message: error instanceof Error ? error.message : 'Unknown conversion error'
+			},
+			processingTime
+		}, { status: 500 });
+	}
+};

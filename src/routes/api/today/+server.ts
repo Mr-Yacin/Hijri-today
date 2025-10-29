@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
-import { HijriEngine } from '$lib/hijri/engine.js';
 import { detectCountryProfile, getUserProfileOverride, getProfileByCountry } from '$lib/profiles/utils.js';
 import { rateLimit } from '$lib/utils/rate-limit.js';
+import { generateTodayData, getCacheTTLUntilMidnight } from '$lib/utils/today-date.js';
 
 export const GET: RequestHandler = async ({ url, request, cookies, getClientAddress }) => {
 	const startTime = Date.now();
@@ -31,8 +31,7 @@ export const GET: RequestHandler = async ({ url, request, cookies, getClientAddr
 		const searchParams = url.searchParams;
 		const country = searchParams.get('country');
 
-		// Initialize engine and get profile
-		const engine = new HijriEngine();
+		// Get profile
 		let profile;
 		
 		if (country) {
@@ -50,30 +49,18 @@ export const GET: RequestHandler = async ({ url, request, cookies, getClientAddr
 			profile = getUserProfileOverride(cookies) || detectedProfile;
 		}
 
-		// Get today's date
-		const today = new Date();
-		const gregorianToday = {
-			year: today.getFullYear(),
-			month: today.getMonth() + 1,
-			day: today.getDate()
-		};
-
-		const hijriToday = engine.getTodayHijri(profile);
+		// Generate today's data
+		const todayData = generateTodayData(profile);
 		const processingTime = Date.now() - startTime;
-
-		// Calculate cache TTL until midnight local time
-		const now = new Date();
-		const midnight = new Date(now);
-		midnight.setHours(24, 0, 0, 0); // Next midnight
-		const secondsUntilMidnight = Math.floor((midnight.getTime() - now.getTime()) / 1000);
+		const secondsUntilMidnight = getCacheTTLUntilMidnight();
 
 		return json({
-			hijri: hijriToday,
-			gregorian: gregorianToday,
-			method: profile.method,
-			country: profile.country,
+			hijri: todayData.hijri,
+			gregorian: todayData.gregorian,
+			method: todayData.method,
+			country: todayData.country,
 			offset: profile.offset,
-			timestamp: now.toISOString(),
+			timestamp: todayData.timestamp,
 			processingTime
 		}, {
 			headers: {

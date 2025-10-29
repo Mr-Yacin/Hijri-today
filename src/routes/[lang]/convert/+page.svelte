@@ -4,8 +4,9 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
-	import { Card, Button } from '$lib/components';
+	import { Card, Button, SEOHead } from '$lib/components';
 	import { HijriEngine } from '$lib/hijri/engine.js';
+	import { generateConvertSEO, generateHreflangLinks } from '$lib/utils/seo';
 	import type { HijriDate, GregorianDate, CountryProfile } from '$lib/hijri/types.js';
 	import type { PageData } from './$types.js';
 
@@ -57,6 +58,32 @@
 			? $_(`${data.initialConversion.error}`)
 			: data.initialConversion.error;
 	}
+	
+	// Generate dynamic SEO based on conversion results
+	$: conversionResult = (() => {
+		if (activeTab === 'gToH' && gResult && gDay && gMonth && gYear) {
+			return {
+				from: 'gregorian' as const,
+				input: { year: Number(gYear), month: Number(gMonth), day: Number(gDay) },
+				result: gResult
+			};
+		} else if (activeTab === 'hToG' && hResult && hDay && hMonth && hYear) {
+			return {
+				from: 'hijri' as const,
+				input: { year: Number(hYear), month: Number(hMonth), day: Number(hDay) },
+				result: hResult
+			};
+		}
+		return undefined;
+	})();
+	
+	$: seoData = generateConvertSEO(
+		$currentLocale,
+		$page.url.origin,
+		$page.url.pathname,
+		conversionResult
+	);
+	$: seoData.hreflang = generateHreflangLinks($page.url.origin, $page.url.pathname);
 
 	// Load available profiles for method comparison
 	import { getAllProfiles } from '$lib/profiles/utils.js';
@@ -345,10 +372,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>{$_('common.convert')} - Hijri Date Platform</title>
-	<meta name="description" content="Convert between Hijri and Gregorian dates instantly with accurate Umm al-Qura calculations" />
-</svelte:head>
+<SEOHead seo={seoData} />
 
 <div class="container mx-auto px-4 py-8">
 	<div class="text-center mb-8">

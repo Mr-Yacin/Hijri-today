@@ -1,30 +1,6 @@
 import type { PageServerLoad } from './$types';
-import { HijriEngine } from '$lib/hijri/engine.js';
 import { detectCountryProfile, getUserProfileOverride } from '$lib/profiles/utils.js';
-import type { CountryProfile, GregorianDate } from '$lib/hijri/types.js';
-
-// Initialize engine
-const hijriEngine = new HijriEngine();
-
-// Generate today's data for a given profile
-function generateTodayData(profile: CountryProfile) {
-	const now = new Date();
-	const gregorianToday: GregorianDate = {
-		year: now.getFullYear(),
-		month: now.getMonth() + 1,
-		day: now.getDate()
-	};
-	
-	const hijriToday = hijriEngine.getTodayHijri(profile);
-	
-	return {
-		hijri: hijriToday,
-		gregorian: gregorianToday,
-		method: profile.method,
-		country: profile.country,
-		profile
-	};
-}
+import { generateTodayData } from '$lib/utils/today-date.js';
 
 export const load: PageServerLoad = async ({ request, cookies }) => {
 	try {

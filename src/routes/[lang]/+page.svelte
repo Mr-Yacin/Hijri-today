@@ -1,14 +1,28 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import { _ } from 'svelte-i18n';
 	import { currentLocale, formatDateNumber } from '$lib/i18n';
-	import { DateDisplay, Card, Button } from '$lib/components';
+	import { DateDisplay, Card, Button, SEOHead } from '$lib/components';
 	import { copyDateToClipboard, shareDateInfo, addDateToCalendar } from '$lib/utils/browser-actions';
+	import { generateDateSEO, generateHreflangLinks } from '$lib/utils/seo';
 	import type { PageData } from './$types';
 	
 	export let data: PageData;
 	
 	// Extract data from server load
 	$: ({ hijriDate, gregorianDate, profile, method, country, error } = data);
+	
+	// Generate SEO data
+	$: monthName = $_(`months.hijri.${hijriDate.month}`);
+	$: seoData = generateDateSEO(
+		hijriDate,
+		gregorianDate,
+		$currentLocale,
+		$page.url.origin,
+		$page.url.pathname,
+		monthName
+	);
+	$: seoData.hreflang = generateHreflangLinks($page.url.origin, $page.url.pathname);
 	
 	// Button states
 	let isLoading = {
@@ -46,10 +60,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>{$_('dates.today_hijri')} - {formatDateNumber(hijriDate.day, $currentLocale)} {$_(`months.hijri.${hijriDate.month}`)} {formatDateNumber(hijriDate.year, $currentLocale)} - Hijri Date Platform</title>
-	<meta name="description" content="{$_('dates.today_hijri')} - {formatDateNumber(hijriDate.day, $currentLocale)} {$_(`months.hijri.${hijriDate.month}`)} {formatDateNumber(hijriDate.year, $currentLocale)} {$currentLocale === 'ar' ? 'هـ' : 'AH'}" />
-</svelte:head>
+<SEOHead seo={seoData} />
 
 <div class="container mx-auto px-4 py-8">
 	<div class="text-center mb-8">
