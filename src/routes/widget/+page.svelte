@@ -6,14 +6,14 @@
 	let codeExamples = {
 		basic: `<!-- Basic widget -->
 <div data-hijri-widget></div>
-<script src="${$page.url.origin}/hijri-widget.js"></script>`,
+<script src="${$page.url.origin}/hijri-widget.js"><\/script>`,
 		
 		arabic: `<!-- Arabic widget -->
 <div data-hijri-widget 
      data-lang="ar" 
      data-theme="light">
 </div>
-<script src="${$page.url.origin}/hijri-widget.js"></script>`,
+<script src="${$page.url.origin}/hijri-widget.js"><\/script>`,
 		
 		customCountry: `<!-- Custom country widget -->
 <div data-hijri-widget 
@@ -21,13 +21,13 @@
      data-country="MA" 
      data-theme="dark">
 </div>
-<script src="${$page.url.origin}/hijri-widget.js"></script>`,
+<script src="${$page.url.origin}/hijri-widget.js"><\/script>`,
 		
 		multiple: `<!-- Multiple widgets -->
 <div data-hijri-widget data-lang="en" data-country="SA"></div>
 <div data-hijri-widget data-lang="ar" data-country="EG"></div>
 <div data-hijri-widget data-lang="en" data-country="TR"></div>
-<script src="${$page.url.origin}/hijri-widget.js"></script>`
+<script src="${$page.url.origin}/hijri-widget.js"><\/script>`
 	};
 
 	onMount(() => {

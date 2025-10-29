@@ -19,7 +19,7 @@
 	}
 </script>
 
-<nav class="navigation" dir={$textDirection} role="navigation" aria-label={$_('navigation.home')}>
+<nav class="navigation" dir={$textDirection} aria-label={$_('navigation.home')}>
 	<div class="nav-container">
 		<div class="nav-brand">
 			<a href={basePath} class="brand-link">

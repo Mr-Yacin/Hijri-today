@@ -390,10 +390,11 @@
 				<Card title="{$_('dates.gregorian')} {$_('dates.day')}" variant="default" padding="medium">
 					<div class="space-y-4">
 						<div>
-							<label class="block text-sm font-medium text-gray-700 mb-2">
+							<label for="g-day" class="block text-sm font-medium text-gray-700 mb-2">
 								{$_('dates.day')}
 							</label>
 							<input
+								id="g-day"
 								type="number"
 								min="1"
 								max="31"
@@ -408,10 +409,11 @@
 							{/if}
 						</div>
 						<div>
-							<label class="block text-sm font-medium text-gray-700 mb-2">
+							<label for="g-month" class="block text-sm font-medium text-gray-700 mb-2">
 								{$_('dates.month')}
 							</label>
 							<select
+								id="g-month"
 								bind:value={gMonth}
 								class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 								class:border-red-300={gValidation.month}
@@ -427,10 +429,11 @@
 							{/if}
 						</div>
 						<div>
-							<label class="block text-sm font-medium text-gray-700 mb-2">
+							<label for="g-year" class="block text-sm font-medium text-gray-700 mb-2">
 								{$_('dates.year')}
 							</label>
 							<input
+								id="g-year"
 								type="number"
 								min={data.supportedRange.gregorian.min.split('-')[0]}
 								max={data.supportedRange.gregorian.max.split('-')[0]}
@@ -492,10 +495,11 @@
 				<Card title="{$_('dates.hijri')} {$_('dates.day')}" variant="default" padding="medium">
 					<div class="space-y-4">
 						<div>
-							<label class="block text-sm font-medium text-gray-700 mb-2">
+							<label for="h-day" class="block text-sm font-medium text-gray-700 mb-2">
 								{$_('dates.day')}
 							</label>
 							<input
+								id="h-day"
 								type="number"
 								min="1"
 								max="30"
@@ -510,10 +514,11 @@
 							{/if}
 						</div>
 						<div>
-							<label class="block text-sm font-medium text-gray-700 mb-2">
+							<label for="h-month" class="block text-sm font-medium text-gray-700 mb-2">
 								{$_('dates.month')}
 							</label>
 							<select
+								id="h-month"
 								bind:value={hMonth}
 								class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 								class:border-red-300={hValidation.month}
@@ -529,10 +534,11 @@
 							{/if}
 						</div>
 						<div>
-							<label class="block text-sm font-medium text-gray-700 mb-2">
+							<label for="h-year" class="block text-sm font-medium text-gray-700 mb-2">
 								{$_('dates.year')}
 							</label>
 							<input
+								id="h-year"
 								type="number"
 								min={data.supportedRange.hijri.min}
 								max={data.supportedRange.hijri.max}
