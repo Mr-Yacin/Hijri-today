@@ -115,11 +115,15 @@ export class GoogleAnalytics {
 			new PerformanceObserver((list) => {
 				for (const entry of list.getEntries()) {
 					if (entry.entryType === 'first-input') {
-						window.gtag('event', 'web_vitals', {
-							name: 'FID',
-							value: Math.round(entry.processingStart - entry.startTime),
-							event_category: 'performance'
-						});
+						// Type assertion for specific PerformanceEntry types
+						const fidEntry = entry as PerformanceEventTiming;
+						if (fidEntry.processingStart !== undefined) {
+							window.gtag('event', 'web_vitals', {
+								name: 'FID',
+								value: Math.round(fidEntry.processingStart - fidEntry.startTime),
+								event_category: 'performance'
+							});
+						}
 					}
 				}
 			}).observe({ entryTypes: ['first-input'] });
@@ -128,8 +132,12 @@ export class GoogleAnalytics {
 			let clsValue = 0;
 			new PerformanceObserver((list) => {
 				for (const entry of list.getEntries()) {
-					if (!entry.hadRecentInput) {
-						clsValue += entry.value;
+					if (entry.entryType === 'layout-shift') {
+						// Type assertion for LayoutShift entry
+						const clsEntry = entry as any;
+						if (!clsEntry.hadRecentInput) {
+							clsValue += clsEntry.value || 0;
+						}
 					}
 				}
 				window.gtag('event', 'web_vitals', {

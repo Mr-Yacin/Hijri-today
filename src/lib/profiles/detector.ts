@@ -19,7 +19,6 @@ const IP_COUNTRY_MAPPING: Record<string, string> = {
 	'94.56.': 'AE',
 	
 	// Egypt
-	'41.': 'EG',
 	'62.': 'EG',
 	'196.203.': 'EG',
 	'197.': 'EG',
@@ -38,7 +37,6 @@ const IP_COUNTRY_MAPPING: Record<string, string> = {
 	'105.': 'MA',     // Maroc Telecom
 	'154.': 'MA',     // Orange Morocco
 	'160.': 'MA',     // INWI
-	'188.': 'MA',     // Multiple ISPs
 	'196.200.': 'MA', // Academic networks
 	'196.217.': 'MA', // Government networks
 	'212.217.': 'MA', // Commercial ISPs
@@ -64,7 +62,6 @@ const IP_COUNTRY_MAPPING: Record<string, string> = {
 	'103.28.': 'ID',
 	'114.': 'ID',
 	'125.': 'ID',
-	'180.': 'ID',
 	
 	// Malaysia
 	'103.16.': 'MY',

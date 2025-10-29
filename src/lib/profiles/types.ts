@@ -1,10 +1,13 @@
 import type { CountryProfile } from '../hijri/types.js';
 
+// Re-export CountryProfile for use in detector.ts
+export type { CountryProfile };
+
 /**
  * Interface for country profile detection
  */
 export interface ProfileDetector {
-	detectFromIP(ip: string): CountryProfile;
+	detectFromIP(ip: string, useGeolocationAPI?: boolean): Promise<CountryProfile>;
 	detectFromLanguage(acceptLanguage: string): CountryProfile;
 	detectFromTimezone(timezone: string): CountryProfile;
 	getUserOverride(cookies: Record<string, string>): CountryProfile | null;
@@ -13,7 +16,9 @@ export interface ProfileDetector {
 		acceptLanguage?: string;
 		timezone?: string;
 		cookies?: Record<string, string>;
-	}): CountryProfile;
+		cfCountry?: string;
+		useGeolocationAPI?: boolean;
+	}): Promise<CountryProfile>;
 }
 
 /**
