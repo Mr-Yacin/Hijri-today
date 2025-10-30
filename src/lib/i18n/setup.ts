@@ -17,18 +17,24 @@ export const textDirection = derived(currentLocale, ($locale) =>
 
 // Initialize i18n with locale detection
 export async function setupI18n(initialLocale?: 'ar' | 'en') {
+	// Ensure we have a valid locale - never pass undefined or invalid values
 	const detectedLocale = initialLocale || detectLocaleFromPath() || detectLocaleFromBrowser();
+
+	// Validate the detected locale against supported locales
+	const validLocale = i18nConfig.supportedLocales.includes(detectedLocale as 'ar' | 'en')
+		? detectedLocale as 'ar' | 'en'
+		: i18nConfig.defaultLocale;
 
 	await init({
 		fallbackLocale: i18nConfig.defaultLocale,
-		initialLocale: detectedLocale,
+		initialLocale: validLocale,
 		loadingDelay: 200
 	});
 
-	currentLocale.set(detectedLocale);
-	
+	currentLocale.set(validLocale);
+
 	// Wait for the locale to be loaded
-	await waitLocale(detectedLocale);
+	await waitLocale(validLocale);
 }
 
 // Detect locale from URL path (/ar or /en)
@@ -36,7 +42,9 @@ export function detectLocaleFromPath(): 'ar' | 'en' | null {
 	if (browser) {
 		const pathSegments = window.location.pathname.split('/');
 		const langSegment = pathSegments[1];
-		if (i18nConfig.supportedLocales.includes(langSegment as 'ar' | 'en')) {
+
+		// Validate that the segment is exactly 2 characters and is a supported locale
+		if (langSegment && langSegment.length === 2 && i18nConfig.supportedLocales.includes(langSegment as 'ar' | 'en')) {
 			return langSegment as 'ar' | 'en';
 		}
 	}
@@ -47,8 +55,19 @@ export function detectLocaleFromPath(): 'ar' | 'en' | null {
 export function detectLocaleFromBrowser(): 'ar' | 'en' {
 	if (browser) {
 		const browserLang = window.navigator.language.split('-')[0];
+		// Check for exact matches first
 		if (i18nConfig.supportedLocales.includes(browserLang as 'ar' | 'en')) {
 			return browserLang as 'ar' | 'en';
+		}
+
+		// Check for Arabic variants (ar-SA, ar-EG, etc.)
+		if (browserLang === 'ar' || window.navigator.language.startsWith('ar-')) {
+			return 'ar';
+		}
+
+		// Check for English variants (en-US, en-GB, etc.)
+		if (browserLang === 'en' || window.navigator.language.startsWith('en-')) {
+			return 'en';
 		}
 	}
 	return i18nConfig.defaultLocale;
@@ -56,18 +75,22 @@ export function detectLocaleFromBrowser(): 'ar' | 'en' {
 
 // Set locale and wait for it to load
 export async function setLocale(newLocale: 'ar' | 'en') {
-	if (i18nConfig.supportedLocales.includes(newLocale)) {
-		try {
-			locale.set(newLocale);
-			currentLocale.set(newLocale);
-			await waitLocale(newLocale);
-		} catch (error) {
-			console.error('Failed to set locale:', error);
-			// Fallback to default locale
-			locale.set(i18nConfig.defaultLocale);
-			currentLocale.set(i18nConfig.defaultLocale);
-			await waitLocale(i18nConfig.defaultLocale);
-		}
+	// Validate the new locale before setting
+	if (!i18nConfig.supportedLocales.includes(newLocale)) {
+		console.warn(`Invalid locale "${newLocale}". Falling back to default locale.`);
+		newLocale = i18nConfig.defaultLocale;
+	}
+
+	try {
+		locale.set(newLocale);
+		currentLocale.set(newLocale);
+		await waitLocale(newLocale);
+	} catch (error) {
+		console.error('Failed to set locale:', error);
+		// Fallback to default locale
+		locale.set(i18nConfig.defaultLocale);
+		currentLocale.set(i18nConfig.defaultLocale);
+		await waitLocale(i18nConfig.defaultLocale);
 	}
 }
 

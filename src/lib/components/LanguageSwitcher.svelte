@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { currentLocale, getLocalizedPath } from '$lib/i18n';
+	import { trackLanguageChange } from '$lib/analytics';
 
 	export let showLabels: boolean = true;
 	export let variant: 'button' | 'dropdown' = 'button';
@@ -11,8 +12,12 @@
 	$: otherLocale = $currentLocale === 'ar' ? 'en' : 'ar';
 
 	async function switchLanguage(targetLocale: 'ar' | 'en') {
+		const previousLanguage = $currentLocale;
 		const newPath = getLocalizedPath(currentPath, targetLocale);
 		await goto(newPath);
+
+		// Track language change for analytics
+		trackLanguageChange(targetLocale, previousLanguage);
 	}
 </script>
 

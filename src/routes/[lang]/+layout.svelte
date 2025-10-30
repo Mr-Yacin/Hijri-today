@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { setupI18n, setLocale, textDirection, currentLocale } from '$lib/i18n';
 	import { Navigation } from '$lib/components';
+	import { Breadcrumb } from '$lib/components';
 	import '../../app.css';
 	import type { LayoutData } from './$types';
 
@@ -27,12 +28,14 @@
 {#if isI18nReady}
 	<div class="app" dir={$textDirection} lang={$currentLocale}>
 		<Navigation />
+		<Breadcrumb locale={$currentLocale} />
 		<main class="main-content">
 			<slot />
 		</main>
 	</div>
 {:else}
 	<div class="app loading" dir={data.lang === 'ar' ? 'rtl' : 'ltr'} lang={data.lang}>
+		<Breadcrumb locale={data.lang} />
 		<div class="loading-container">
 			<div class="loading-spinner"></div>
 		</div>
@@ -47,7 +50,8 @@
 	}
 
 	.main-content {
-		min-height: calc(100vh - 4rem); /* Account for navigation height */
+		min-height: calc(100vh - 8rem); /* Account for navigation + breadcrumb height */
+		margin-top: 1rem;
 	}
 
 	/* RTL-specific styles */
@@ -62,6 +66,7 @@
 	/* Loading state */
 	.loading {
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		min-height: 100vh;

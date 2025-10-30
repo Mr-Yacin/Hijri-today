@@ -11,10 +11,26 @@ export interface SEOData {
 		url: string;
 		type: string;
 		image?: string;
+		imageAlt?: string;
+		imageWidth?: number;
+		imageHeight?: number;
 	};
 	jsonLd?: Record<string, any>;
 	robots?: string;
 	hreflang?: Array<{ lang: string; url: string }>;
+	// New features
+	breadcrumbs?: BreadcrumbItem[];
+	faq?: FAQItem[];
+}
+
+export interface BreadcrumbItem {
+	name: string;
+	url: string;
+}
+
+export interface FAQItem {
+	question: string;
+	answer: string;
 }
 
 export function generateDateSEO(
@@ -46,6 +62,7 @@ export function generateDateSEO(
 		: `Today's Hijri date ${hijriDateStr} corresponds to ${gregorianDateStr} - Accurate Islamic calendar conversion`;
 	
 	const canonical = `${baseUrl}${path}`;
+	const imageUrl = `${baseUrl}/api/og-image?text=${encodeURIComponent(hijriDateStr)}&locale=${locale}`;
 	
 	return {
 		title,
@@ -55,7 +72,11 @@ export function generateDateSEO(
 			title,
 			description,
 			url: canonical,
-			type: 'website'
+			type: 'website',
+			image: imageUrl,
+			imageAlt: isArabic ? `التاريخ الهجري اليوم ${hijriDateStr}` : `Today's Hijri date ${hijriDateStr}`,
+			imageWidth: 1200,
+			imageHeight: 630
 		},
 		jsonLd: {
 			'@context': 'https://schema.org',
@@ -69,7 +90,8 @@ export function generateDateSEO(
 				startDate: `${gregorianDate.year}-${gregorianDate.month.toString().padStart(2, '0')}-${gregorianDate.day.toString().padStart(2, '0')}`,
 				description: `${isArabic ? 'التاريخ الهجري' : 'Hijri date'} ${hijriDateStr}`
 			}
-		}
+		},
+		breadcrumbs: generateBreadcrumbs(locale, baseUrl, path, isArabic)
 	};
 }
 
@@ -93,6 +115,7 @@ export function generateCalendarSEO(
 		: `${monthName} ${formattedYear} Hijri calendar with corresponding Gregorian dates - Accurate Islamic calendar`;
 	
 	const canonical = `${baseUrl}${path}`;
+	const imageUrl = `${baseUrl}/api/og-image?text=${encodeURIComponent(monthName + ' ' + formattedYear)}&locale=${locale}`;
 	
 	return {
 		title,
@@ -102,7 +125,11 @@ export function generateCalendarSEO(
 			title,
 			description,
 			url: canonical,
-			type: 'website'
+			type: 'website',
+			image: imageUrl,
+			imageAlt: isArabic ? `تقويم ${monthName} ${formattedYear} هـ` : `${monthName} ${formattedYear} AH Calendar`,
+			imageWidth: 1200,
+			imageHeight: 630
 		},
 		jsonLd: {
 			'@context': 'https://schema.org',
@@ -115,7 +142,8 @@ export function generateCalendarSEO(
 				name: `${monthName} ${formattedYear}`,
 				description: `${isArabic ? 'تقويم هجري لشهر' : 'Hijri calendar for'} ${monthName} ${formattedYear}`
 			}
-		}
+		},
+		breadcrumbs: generateBreadcrumbs(locale, baseUrl, path, isArabic)
 	};
 }
 
@@ -165,6 +193,7 @@ export function generateConvertSEO(
 	}
 	
 	const canonical = `${baseUrl}${path}`;
+	const imageUrl = `${baseUrl}/api/og-image?text=${encodeURIComponent('Converter')}&locale=${locale}`;
 	
 	return {
 		title,
@@ -174,7 +203,11 @@ export function generateConvertSEO(
 			title,
 			description,
 			url: canonical,
-			type: 'website'
+			type: 'website',
+			image: imageUrl,
+			imageAlt: isArabic ? 'محول التاريخ الهجري والميلادي' : 'Hijri and Gregorian Date Converter',
+			imageWidth: 1200,
+			imageHeight: 630
 		},
 		jsonLd: {
 			'@context': 'https://schema.org',
@@ -184,8 +217,100 @@ export function generateConvertSEO(
 			url: canonical,
 			applicationCategory: 'UtilityApplication',
 			operatingSystem: 'Web Browser'
-		}
+		},
+		breadcrumbs: generateBreadcrumbs(locale, baseUrl, path, isArabic),
+		faq: generateFAQS(locale)
 	};
+}
+
+function generateBreadcrumbs(
+	locale: 'ar' | 'en',
+	baseUrl: string,
+	path: string,
+	isArabic: boolean
+): BreadcrumbItem[] {
+	const breadcrumbs: BreadcrumbItem[] = [
+		{
+			name: isArabic ? 'الرئيسية' : 'Home',
+			url: `${baseUrl}/${locale}`
+		}
+	];
+
+	const pathSegments = path.split('/').filter(Boolean);
+	
+	if (pathSegments.length > 0) {
+		const currentPath = pathSegments.join('/');
+		if (pathSegments[0] === 'today') {
+			breadcrumbs.push({
+				name: isArabic ? 'اليوم' : 'Today',
+				url: `${baseUrl}/${locale}/today`
+			});
+		} else if (pathSegments[0] === 'calendar') {
+			breadcrumbs.push({
+				name: isArabic ? 'التقويم' : 'Calendar',
+				url: `${baseUrl}/${locale}/calendar`
+			});
+			
+			if (pathSegments.length >= 3) {
+				const year = pathSegments[1];
+				const month = pathSegments[2];
+				breadcrumbs.push({
+					name: isArabic ? `سنة ${year}` : `Year ${year}`,
+					url: `${baseUrl}/${locale}/calendar/${year}`
+				});
+				breadcrumbs.push({
+					name: isArabic ? `شهر ${month}` : `Month ${month}`,
+					url: `${baseUrl}/${locale}/calendar/${year}/${month}`
+				});
+			}
+		} else if (pathSegments[0] === 'convert') {
+			breadcrumbs.push({
+				name: isArabic ? 'التحويل' : 'Convert',
+				url: `${baseUrl}/${locale}/convert`
+			});
+		}
+	}
+	
+	return breadcrumbs;
+}
+
+function generateFAQS(locale: 'ar' | 'en'): FAQItem[] {
+	const isArabic = locale === 'ar';
+	
+	return [
+		{
+			question: isArabic 
+				? 'كيفية تحويل التاريخ الهجري إلى الميلادي؟'
+				: 'How to convert Hijri date to Gregorian?',
+			answer: isArabic
+				? 'يمكنك استخدام محول التاريخ الخاص بنا لتحويل أي تاريخ هجري إلى ميلادي بدقة عالية باستخدام التقويم الهجري السعودي (أم القرى).'
+				: 'You can use our date converter to convert any Hijri date to Gregorian with high accuracy using the Saudi Hijri calendar (Umm al-Qura).'
+		},
+		{
+			question: isArabic
+				? 'ما هو الفرق بين التقويم الهجري والميلادي؟'
+				: 'What is the difference between Hijri and Gregorian calendars?',
+			answer: isArabic
+				? 'التقويم الهجري يعتمد على الدورة القمرية (354-355 يوم في السنة) بينما التقويم الميلادي يعتمد على الدورة الشمسية (365-366 يوم في السنة).'
+				: 'The Hijri calendar is based on lunar cycles (354-355 days per year) while the Gregorian calendar is based on solar cycles (365-366 days per year).'
+		},
+		{
+			question: isArabic
+				? 'هل التواريخ دقيقة؟'
+				: 'Are the dates accurate?',
+			answer: isArabic
+				? 'نعم، نحن نستخدم التقويم الهجري السعودي الرسمي (أم القرى) والذي يعتبر المرجع الرسمي للحج والمواسم الدينية.'
+				: 'Yes, we use the official Saudi Hijri calendar (Umm al-Qura) which is the official reference for Hajj and religious seasons.'
+		},
+		{
+			question: isArabic
+				? 'هل يمكنني الحصول على تقويم كامل؟'
+				: 'Can I get a full calendar?',
+			answer: isArabic
+				? 'نعم، يمكنك عرض تقويم كامل لأي سنة هجرية مع التواريخ الميلادية المقابلة لكل يوم.'
+				: 'Yes, you can view a complete calendar for any Hijri year with corresponding Gregorian dates for each day.'
+		}
+	];
 }
 
 export function generateHreflangLinks(
@@ -197,4 +322,29 @@ export function generateHreflangLinks(
 		lang,
 		url: `${baseUrl}/${lang}${path.replace(/^\/[a-z]{2}/, '')}`
 	}));
+}
+
+// Add FAQ JSON-LD to existing structured data
+export function addFAQTOSchema(seoData: SEOData, locale: 'ar' | 'en'): SEOData {
+	if (!seoData.faq || !seoData.jsonLd) return seoData;
+
+	const isArabic = locale === 'ar';
+	
+	const faqJsonLd = {
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		'mainEntity': seoData.faq.map(faq => ({
+			'@type': 'Question',
+			'name': faq.question,
+			'acceptedAnswer': {
+				'@type': 'Answer',
+				'text': faq.answer
+			}
+		}))
+	};
+
+	return {
+		...seoData,
+		jsonLd: [seoData.jsonLd, faqJsonLd]
+	};
 }

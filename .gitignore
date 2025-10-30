@@ -26,4 +26,5 @@ vite.config.ts.timestamp-*
 src/lib/paraglide
 
 .kiro/
+.kilocode/
 

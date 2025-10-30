@@ -3,15 +3,16 @@
 	import { page } from '$app/stores';
 	import { initAnalytics, trackPageView, trackPerformance } from '$lib/analytics';
 	import { ANALYTICS_CONFIG } from '$lib/config/analytics';
+	import { currentLocale } from '$lib/i18n';
 
 	// Initialize analytics on mount
 	onMount(() => {
 		if (ANALYTICS_CONFIG.enabled) {
 			const analytics = initAnalytics(ANALYTICS_CONFIG);
-			
+
 			// Track initial page view
 			trackPageView();
-			
+
 			// Track performance metrics after a short delay
 			setTimeout(() => {
 				trackPerformance();

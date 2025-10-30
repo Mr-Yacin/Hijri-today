@@ -50,6 +50,11 @@ export class GoogleAnalytics {
 				site_search: false,
 				video_engagement: false,
 				file_downloads: true
+			},
+			// Custom dimensions for multilingual tracking
+			custom_map: {
+				'custom_parameter_1': 'page_locale',
+				'custom_parameter_2': 'user_language'
 			}
 		});
 
@@ -65,7 +70,7 @@ export class GoogleAnalytics {
 	/**
 	 * Track page view
 	 */
-	trackPageView(path?: string, title?: string): void {
+	trackPageView(path?: string, title?: string, locale?: string): void {
 		if (!this.config.enabled || typeof window === 'undefined' || !window.gtag) {
 			return;
 		}
@@ -73,8 +78,28 @@ export class GoogleAnalytics {
 		window.gtag('config', this.config.measurementId, {
 			page_path: path || window.location.pathname,
 			page_title: title || document.title,
-			page_location: window.location.href
+			page_location: window.location.href,
+			// Add locale tracking for multilingual analytics
+			custom_parameter_1: locale || this.detectCurrentLocale(),
+			custom_parameter_2: navigator.language
 		});
+	}
+
+	/**
+	 * Detect current locale from URL or browser
+	 */
+	private detectCurrentLocale(): string {
+		if (typeof window === 'undefined') return 'unknown';
+
+		// Try to detect from URL path
+		const pathSegments = window.location.pathname.split('/');
+		const langSegment = pathSegments[1];
+		if (langSegment && (langSegment === 'ar' || langSegment === 'en')) {
+			return langSegment;
+		}
+
+		// Fallback to browser language
+		return navigator.language.split('-')[0];
 	}
 
 	/**

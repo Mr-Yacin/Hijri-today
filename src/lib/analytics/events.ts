@@ -25,10 +25,12 @@ export function trackMethodSelection(method: string) {
 /**
  * Track language change
  */
-export function trackLanguageChange(language: string) {
+export function trackLanguageChange(language: string, previousLanguage?: string) {
 	trackEvent('language_change', {
 		language: language,
-		event_category: 'engagement'
+		previous_language: previousLanguage,
+		event_category: 'engagement',
+		event_label: `${previousLanguage || 'unknown'} → ${language}`
 	});
 }
 
