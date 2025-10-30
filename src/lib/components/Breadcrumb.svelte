@@ -10,6 +10,9 @@
 	export let items: BreadcrumbItem[] = [];
 	export let locale: 'ar' | 'en' = 'en';
 
+	// Use the provided locale prop directly instead of calculating from page data
+	const lang = locale;
+
 	// Performance optimization: memoize breadcrumb generation
 	let lastUrl = '';
 	let cachedBreadcrumbs: BreadcrumbItem[] = [];
@@ -35,7 +38,6 @@
 		const result: BreadcrumbItem[] = [];
 
 		// Add home link
-		const lang = currentPage.params.lang || 'en';
 		result.push({
 			label: getCurrentPageLabel(currentPage, 'navigation.home', lang, lang === 'ar' ? 'الرئيسية' : 'Home'),
 			url: `/${lang}`
@@ -109,7 +111,7 @@
 			"@type": "ListItem",
 			"position": index + 1,
 			"name": item.label,
-			...(item.url && index < currentBreadcrumbs.length - 1 ? {
+			...(item.url ? {
 				"item": {
 					"@type": "WebPage",
 					"@id": item.url,

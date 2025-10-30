@@ -108,7 +108,7 @@ Access the web interface at `http://localhost:5173` to:
 # GET request
 curl "http://localhost:5173/api/gToH?date=2024-01-15&country=sa"
 
-# POST request
+# POST request (Recommended for production)
 curl -X POST "http://localhost:5173/api/gToH" \
   -H "Content-Type: application/json" \
   -d '{"date": "2024-01-15", "country": "sa"}'
@@ -116,7 +116,13 @@ curl -X POST "http://localhost:5173/api/gToH" \
 
 #### Convert Hijri to Gregorian
 ```bash
+# GET request
 curl "http://localhost:5173/api/hToG?year=1445&month=7&day=15&country=sa"
+
+# POST request (Recommended for production)
+curl -X POST "http://localhost:5173/api/hToG" \
+  -H "Content-Type: application/json" \
+  -d '{"year": 1445, "month": 7, "day": 15, "country": "sa"}'
 ```
 
 #### Get Today's Hijri Date
@@ -135,9 +141,21 @@ curl "http://localhost:5173/api/ics/sa/2024/7" -o "ramadan_2024.ics"
 
 ### JavaScript Integration
 ```typescript
-// Convert a Gregorian date to Hijri
-const response = await fetch('/api/gToH?date=2024-01-15&country=sa');
+// Convert a Gregorian date to Hijri (POST - Recommended for production)
+const response = await fetch('/api/gToH', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ date: '2024-01-15', country: 'sa' })
+});
 const hijriDate = await response.json();
+
+// Convert Hijri to Gregorian (POST - Recommended for production)
+const response2 = await fetch('/api/hToG', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ year: 1445, month: 7, day: 15, country: 'sa' })
+});
+const gregorianDate = await response2.json();
 
 console.log(hijriDate);
 // {
@@ -149,7 +167,20 @@ console.log(hijriDate);
 //     "country": "Saudi Arabia"
 //   }
 // }
+
+// Error handling example
+if (!response.ok) {
+  const error = await response.json();
+  console.error('API Error:', error.message);
+}
 ```
+
+### API Best Practices
+- **Use POST for production**: POST requests are recommended over GET for better security and rate limiting
+- **Rate Limiting**: API includes IP-based throttling to prevent abuse
+- **Input Validation**: All inputs are validated using Zod schemas with detailed error messages
+- **Error Handling**: Always check `response.success` and handle `response.error` when present
+- **Country Codes**: Use ISO 3166-1 alpha-2 codes or 'auto' for automatic detection
 
 ## 🏗️ Architecture
 

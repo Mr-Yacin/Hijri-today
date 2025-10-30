@@ -48,6 +48,26 @@
 	
 	<!-- JSON-LD Structured Data -->
 	{#if seo.jsonLd}
-		{@html `<script type="application/ld+json">${JSON.stringify(seo.jsonLd)}</script>`}
+		{#if Array.isArray(seo.jsonLd)}
+			{#each seo.jsonLd as schemaItem}
+				{@html `<script type="application/ld+json">${JSON.stringify(schemaItem)}</script>`}
+			{/each}
+		{:else}
+			{@html `<script type="application/ld+json">${JSON.stringify(seo.jsonLd)}</script>`}
+		{/if}
+	{/if}
+	
+	<!-- BreadcrumbList Schema (if breadcrumbs exist) -->
+	{#if seo.breadcrumbs && seo.breadcrumbs.length > 0}
+		{@html `<script type="application/ld+json">${JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "BreadcrumbList",
+			"itemListElement": seo.breadcrumbs.map((item, index) => ({
+				"@type": "ListItem",
+				"position": index + 1,
+				"name": item.name,
+				"item": item.url
+			}))
+		})}</script>`}
 	{/if}
 </svelte:head>
